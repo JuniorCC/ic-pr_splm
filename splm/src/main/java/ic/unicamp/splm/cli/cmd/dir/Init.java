@@ -2,7 +2,10 @@ package ic.unicamp.splm.cli.cmd.dir;
 
 import ic.unicamp.splm.core.SplMgr;
 import ic.unicamp.splm.core.SplMgrBuilder;
+import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import picocli.CommandLine;
+
+import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS;
 
 @CommandLine.Command(
     name = "init",
@@ -26,91 +29,23 @@ public class Init implements Runnable {
   public void run() {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
      if (ff) {
-      if (splMgr.__exists_splm_dir()) {
-        splMgr.__remove_splm_dir();
-      }
-      if (splMgr.__exists_git_dir()) {
-        splMgr.__remove_git_directory();
-      }
-       splMgr.__create_xgit_dir();
-       splMgr.__create_git_dir();
+         splMgr.create_hard_all_dirs(); //hard means 'and remove'
     } else {
-      if (splMgr.__exists_splm_dir()) {
+      if (splMgr.exists_splm_dir()) {
         if (f) {
-          splMgr.__remove_splm_dir();
-          splMgr.__create_xgit_dir();
-          splMgr.__create_git_directory_if_not_exists();
+            splMgr.create_hard_splm_dir();
+            splMgr.create_soft_git_dir(); //soft means it not exits
+
         } else {
-          String message =
-              "We could not create a new xgit directory because there is a .xgit directory in your path.";
-          SplMgrLogger.warn(message, true);
+          SplMgrLogger.warn(WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS, true);
         }
       } else {
-        splMgr.__create_xgit_dir();
-        splMgr.__create_git_directory_if_not_exists();
+        splMgr.create_splm_dir();
+        splMgr.create_soft_git_dir();
       }
     }
-    //
-
-    //SplMgr.initGit();
+     splMgr.initGit();
   }
 
- /*  private boolean __exists_splm_dir() {
-    return Common.exists_xgit_dir();
-  }
 
-  private boolean __exists_git_dir() {
-    return Common.exists_git_dir();
-  }
-
-  private void __create_git_directory_if_not_exists() {
-    if (!Common.exists_git_dir()) {
-      __create_git_dir();
-    } else {
-      String message =
-          "We could not create a new Git directory because we detected a .git directory in your path";
-      SplMgrLogger.warn(message, true);
-    }
-  }
-
-  private void __create_xgit_dir() {
-    if (Common.create_xgit_dir()) {
-      String message = "Xgit directory created";
-      SplMgrLogger.info(message, true);
-    } else {
-      String message = "We could not create the Xgit directory";
-      SplMgrLogger.error(message, true);
-    }
-  }
-
-  private void __remove_splm_dir() {
-    if (Common.remove_xgit_dir()) {
-      String message = "Xgit directory removed";
-      SplMgrLogger.info(message, true);
-
-    } else {
-      String message = "We could not remove the Xgit directory";
-      SplMgrLogger.error(message, true);
-    }
-  }
-
-  private void __create_git_dir() {
-    if (Common.create_git_dir()) {
-      String message = "Git directory created";
-      SplMgrLogger.info(message, true);
-    } else {
-      String message = "We could not create the Git directory";
-      SplMgrLogger.error(message, true);
-    }
-  }
-
-  private void __remove_git_directory() {
-    if (Common.remove_git_dir()) {
-      String message = "Git directory removed";
-      SplMgrLogger.info(message, true);
-    } else {
-      String message = "We could not remove the Git directory";
-      SplMgrLogger.error(message, true);
-    }
-  }*/
 }

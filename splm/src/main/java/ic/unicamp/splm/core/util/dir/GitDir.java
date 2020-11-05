@@ -1,5 +1,6 @@
 package ic.unicamp.splm.core.util.dir;
 
+import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -10,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static ic.unicamp.splm.core.util.dir.DirTag.GIT_DIR;
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
+import static ic.unicamp.splm.core.util.msg.WarnMsgTag.*;
 
 public class GitDir {
 
@@ -26,6 +29,14 @@ public class GitDir {
     return GitDir.get_git_dir__as_file().exists();
   }
 
+  public static void create_git_dir_with_msg() {
+    if (GitDir.create_git_dir()) {
+      SplMgrLogger.info(INF_0__GIT_DIR_CREATED, true);
+    } else {
+      SplMgrLogger.warn(WARN_4__GIT_DIR_NOT_CREATED, true);
+    }
+  }
+
   public static boolean create_git_dir() {
     try {
       String currentDirectory = System.getProperty("user.dir");
@@ -37,6 +48,15 @@ public class GitDir {
       return false;
     }
   }
+
+  public static void remove_git_dir_with_msg() {
+    if (GitDir.remove_git_dir()) {
+      SplMgrLogger.info(INF_0__GIT_DIR_REMOVED, true);
+    } else {
+      SplMgrLogger.warn(WARN_4__GIT_DIR_NOT_REMOVED, true);
+    }
+  }
+
 
   public static boolean remove_git_dir() {
     if (GitDir.exists_git_dir()) {

@@ -458,7 +458,7 @@ public class Cmd implements Runnable{
   }
 
   private void __print_cmd_valid() {
-    SplMgrLogger.message(INF_0__CMD_ACCEPTED, false);
+    SplMgrLogger.message_ln(INF_0__CMD_ACCEPTED, false);
   }
 
   private void __print_cmd_end() {
@@ -466,7 +466,7 @@ public class Cmd implements Runnable{
   }
 
   private void __print_cmd_not_valid() {
-    SplMgrLogger.message(INF_0__CMD_NOT_VALID, false);
+    SplMgrLogger.message_ln(INF_0__CMD_NOT_VALID, false);
   }
 
   private void __print_prompt() {

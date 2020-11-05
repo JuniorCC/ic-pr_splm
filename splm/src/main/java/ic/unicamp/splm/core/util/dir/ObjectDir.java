@@ -15,13 +15,7 @@ import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_3__OBJ_DIR_ALREADY_E
 import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_3__OBJ_DIR_NOT_CREATED;
 
 public class ObjectDir {
-  private static void __setHiddenAttrib(Path filePath) {
-    try {
-      Files.setAttribute(filePath, "dos:hidden", true);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
+
   // splm/object
   public static Path get_splm_obj_dir__as_path() {
     String currentDirectory = System.getProperty("user.dir");
@@ -57,7 +51,7 @@ public class ObjectDir {
     File object_dir_as_file = ObjectDir.get_splm_obj_dir__as_file();
     boolean file_was_created = object_dir_as_file.mkdir();
     if (file_was_created) {
-      ObjectDir.__setHiddenAttrib(ObjectDir.get_splm_obj_dir__as_path());
+      CommonDir.setHiddenAttrib(ObjectDir.get_splm_obj_dir__as_path());
       return true;
     }
     return false;

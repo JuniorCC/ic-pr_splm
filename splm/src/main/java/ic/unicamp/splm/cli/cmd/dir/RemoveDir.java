@@ -1,24 +1,14 @@
 package ic.unicamp.splm.cli.cmd.dir;
 
+import ic.unicamp.splm.core.SplMgr;
+import ic.unicamp.splm.core.SplMgrBuilder;
 import picocli.CommandLine;
 
 @CommandLine.Command(
     name = "remove-dir",
-    description = "The 'remove-dir' command removes the xgit directory.")
+    description = "The 'remove-dir' command removes the splm directory.")
 public class RemoveDir implements Runnable {
   public static final String command_name = "remove-dir";
-
-  @CommandLine.Option(
-      names = "-stage",
-      description =
-          "The 'remove-dir -stage' command removes the stage directory in the xgit directory.")
-  private boolean stage;
-
-  @CommandLine.Option(
-      names = "-object",
-      description =
-          "The 'remove-dir -object' command removes the object directory in the xgit directory.")
-  private boolean object;
 
   @CommandLine.Option(
       names = "-git",
@@ -32,23 +22,16 @@ public class RemoveDir implements Runnable {
 
   @Override
   public void run() {
-    /* if (stage) {
-      __remove_stage_directory();
-      return;
-    }
-    if (object) {
-      __remove_object_directory();
-      return;
-    }
+    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
     if (git) {
-      __remove_git_directory();
+      splMgr.remove_git_dir();
       return;
     }
     if (all) {
-      __remove_all_directories();
+      splMgr.remove_all_dirs();
       return;
     }
-    __remove_xgit_directory();*/
+    splMgr.remove_splm_dir();
   }
 
   /* private void __remove_xgit_directory() {
