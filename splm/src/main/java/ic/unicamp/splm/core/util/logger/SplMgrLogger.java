@@ -11,17 +11,16 @@ public class SplMgrLogger {
     if (tag) {
       message = TAG_XGIT_INFO + message;
     }
-    message= message+TAG_LINE_BREAK;
+    message = message + TAG_LINE_BREAK;
     logger.trace(message);
     logger.info(message);
-
   }
 
   public static void warn(String message, boolean tag) {
     if (tag) {
       message = TAG_XGIT_WARN + message;
     }
-    message= message+TAG_LINE_BREAK;
+    message = message + TAG_LINE_BREAK;
     logger.trace(message);
     logger.warn(message);
   }
@@ -30,7 +29,7 @@ public class SplMgrLogger {
     if (tag) {
       message = TAG_XGIT_ERROR + message;
     }
-    message= message+TAG_LINE_BREAK;
+    message = message + TAG_LINE_BREAK;
     logger.trace(message);
     logger.error(message);
   }
@@ -41,11 +40,12 @@ public class SplMgrLogger {
     }
     logger.trace(message);
   }
+
   public static void message_ln(String message, boolean tag) {
     if (tag) {
       message = TAG_XGIT_INFO + message;
     }
-    message= message+TAG_LINE_BREAK;
+    message = message + TAG_LINE_BREAK;
     logger.trace(message);
   }
 }

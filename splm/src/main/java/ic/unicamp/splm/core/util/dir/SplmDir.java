@@ -2,18 +2,17 @@ package ic.unicamp.splm.core.util.dir;
 
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static ic.unicamp.splm.core.util.dir.DirTag.SPLM_DIR;
-import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
-import static ic.unicamp.splm.core.util.msg.WarnMsgTag.*;
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__SPLM_DIR_CREATED;
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__SPLM_DIR_REMOVED;
+import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_4__SPLM_DIR_NOT_CREATED;
+import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_4__SPLM_DIR_NOT_REMOVED;
 
 public class SplmDir {
 
@@ -29,7 +28,6 @@ public class SplmDir {
   public static boolean exists_splm_dir() {
     return SplmDir.get_splm_dir__as_file().exists();
   }
-
 
   public static void create_splm_dir_with_msg() {
     if (SplmDir.create_splm_dir()) {
@@ -60,10 +58,10 @@ public class SplmDir {
   public static boolean remove_splm_dir() {
     if (SplmDir.exists_splm_dir()) {
       try {
-/*        Files.walk(SplmDir.get_splm_dir__as_path())
-                .map(Path::toFile)
-                .sorted((o1, o2) -> -o1.compareTo(o2))
-                .forEach(File::delete);*/
+        /*        Files.walk(SplmDir.get_splm_dir__as_path())
+        .map(Path::toFile)
+        .sorted((o1, o2) -> -o1.compareTo(o2))
+        .forEach(File::delete);*/
         FileUtils.deleteDirectory(SplmDir.get_splm_dir__as_file());
         return true;
       } catch (IOException e) {

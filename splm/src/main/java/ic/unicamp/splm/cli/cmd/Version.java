@@ -3,7 +3,7 @@ package ic.unicamp.splm.cli.cmd;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import picocli.CommandLine;
 
-import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__SPLM_VERSION;
 
 @CommandLine.Command(name = "version")
 public class Version implements Runnable {

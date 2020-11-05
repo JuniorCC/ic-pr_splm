@@ -23,4 +23,9 @@ public interface InfoMsgTag {
   String INF_0__GIT_DIR_CREATED = "git directory created";
   String INF_0__GIT_DIR_REMOVED = "git directory removed";
   String INFO_3__GIT_AND_SLPM_DIRECTORIES_REMOVED = "git and splm directories removed";
+
+  String INFO_3__SPLM_DIR_DETECTED = "splm directory detected";
+  String INFO_3__SPLM_DIR_NOT_DETECTED = "splm directory not detected";
+  String INFO_3__GIT_DIR_DETECTED = "git directory detected";
+  String INFO_3__GIT_DIR_NOT_DETECTED = "git directory not detected";
 }

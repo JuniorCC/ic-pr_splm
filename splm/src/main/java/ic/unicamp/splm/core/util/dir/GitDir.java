@@ -11,8 +11,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static ic.unicamp.splm.core.util.dir.DirTag.GIT_DIR;
-import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
-import static ic.unicamp.splm.core.util.msg.WarnMsgTag.*;
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__GIT_DIR_CREATED;
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__GIT_DIR_REMOVED;
+import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_4__GIT_DIR_NOT_CREATED;
+import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_4__GIT_DIR_NOT_REMOVED;
 
 public class GitDir {
 
@@ -57,9 +59,9 @@ public class GitDir {
     }
   }
 
-
   public static boolean remove_git_dir() {
     if (GitDir.exists_git_dir()) {
+
       try {
         FileUtils.deleteDirectory(GitDir.get_git_dir__as_file());
         return true;

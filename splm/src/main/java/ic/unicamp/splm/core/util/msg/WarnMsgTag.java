@@ -16,11 +16,12 @@ public interface WarnMsgTag {
   String WARN_4__OBJ_DIR_GRAPH_FILE_NOT_CREATED = "(Relations) Graph File not created";
   String WARN_5__OBJ_DIR_GRAPH_FILE_ALREADY_EXITS = "(Relations) Graph File file already exits";
 
-
   String WARN_3__WE_COULD_NOT_CREATE_ROOT_FEATURE = "we couldn't create ROOT Feature";
 
-  String WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS = "We could not create a new splm directory because there is already a .splm directory";
-  String WARN_3__WE_COULD_NOT_CREATE_GIT_DIR_BECAUSE_ALREADY_EXITS = "We could not create a new git directory because there is already a .git directory";
+  String WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS =
+      "We could not create a new splm directory because there is already a .splm directory";
+  String WARN_3__WE_COULD_NOT_CREATE_GIT_DIR_BECAUSE_ALREADY_EXITS =
+      "We could not create a new git directory because there is already a .git directory";
 
   String WARN_4__SPLM_DIR_NOT_CREATED = "splm directory not created";
   String WARN_4__SPLM_DIR_NOT_REMOVED = "splm directory not removed";
