@@ -1,19 +1,30 @@
 package ic.unicamp.splm.cli.cmd;
 
+import ic.unicamp.splm.core.SplMgr;
+import ic.unicamp.splm.core.SplMgrBuilder;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import picocli.CommandLine;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 @CommandLine.Command(name = "clear")
 public class Clear implements Runnable {
   public static final String command_name = "clear";
-  private static SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss:SSS");
+  //private static SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss:SSS");
+
+  @CommandLine.Option(
+          names = "-data",
+          description =
+                  "Clear graph")
+  private boolean data;
 
   @Override
   public void run() {
+    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+    if(data){
+      splMgr.clearData();
+    }
     try {
       /*   final String os = System.getProperty("os.name");
       if (os.contains("Windows")) {

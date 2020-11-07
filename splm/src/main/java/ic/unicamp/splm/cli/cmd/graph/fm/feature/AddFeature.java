@@ -1,5 +1,8 @@
 package ic.unicamp.splm.cli.cmd.graph.fm.feature;
 
+import ic.unicamp.splm.core.SplMgr;
+import ic.unicamp.splm.core.SplMgrBuilder;
+import ic.unicamp.splm.core.data.graph.objs.feature.FeatureMode;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "add-feature")
@@ -29,24 +32,29 @@ public class AddFeature implements Runnable {
 
   @Override
   public void run() {
-    /* SplMgr SplMgr = SplMgrBuilder.getSingletonInstance();
+    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+    FeatureMode featureMode = FeatureMode.CONCRETE;
+
+    if (abs) {
+      featureMode = FeatureMode.ABSTRACT;
+    }
     if (optional) {
-      SplMgr.addOptionalFeature(name, parent, abs);
+      splMgr.addOptionalFeature(parent, name, featureMode);
       return;
     }
     if (mandatory) {
-      SplMgr.addMandatoryFeature(name, parent, abs);
+      splMgr.addMandatoryFeature(parent, name, featureMode);
       return;
     }
     if (or) {
-      SplMgr.addOrFeature(name, parent, abs);
+      splMgr.addOrFeature(parent, name, featureMode);
       return;
     }
     if (alternative) {
-      SplMgr.addAlternativeFeature(name, parent, abs);
+      splMgr.addAlternativeFeature(parent, name, featureMode);
       return;
     }
     // default
-    SplMgr.addMandatoryFeature(name, parent, abs);*/
+    splMgr.addMandatoryFeature(parent, name, featureMode);
   }
 }

@@ -1,16 +1,16 @@
 package ic.unicamp.splm.cli.util;
 
-import ic.unicamp.splm.cli.cmd.Clear;
-import ic.unicamp.splm.cli.cmd.Version;
-import ic.unicamp.splm.cli.cmd.dir.FileStatus;
-import ic.unicamp.splm.cli.cmd.dir.Init;
+import ic.unicamp.splm.cli.cmd.*;
 import ic.unicamp.splm.cli.cmd.dir.RemoveDir;
 import ic.unicamp.splm.cli.cmd.git.Checkout;
 import ic.unicamp.splm.cli.cmd.git.Pack;
 import ic.unicamp.splm.cli.cmd.git.Status;
 import ic.unicamp.splm.cli.cmd.graph.br.*;
 import ic.unicamp.splm.cli.cmd.graph.conf.*;
-import ic.unicamp.splm.cli.cmd.graph.fm.*;
+import ic.unicamp.splm.cli.cmd.graph.fm.InitFM;
+import ic.unicamp.splm.cli.cmd.graph.fm.LoadFM;
+import ic.unicamp.splm.cli.cmd.graph.fm.SaveFM;
+import ic.unicamp.splm.cli.cmd.graph.fm.ShowFM;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.AddConstraint;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.EditConstraint;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.ListConstraint;
@@ -27,9 +27,10 @@ public interface CmdTag {
   String CMD_EXIT = "exit";
   String CMD_CLEAR = Clear.command_name;
   String CMD_VERSION = Version.command_name;
+  String CMD_SAVE = Save.command_name;
+  String CMD_LOAD = Load.command_name;
 
   // directory
-  String CMD_FILE_STATUS = FileStatus.command_name;
   String CMD_INIT = Init.command_name;
   String CMD_REMOVE_DIR = RemoveDir.command_name;
 
@@ -72,7 +73,7 @@ public interface CmdTag {
   String CMD_LOAD_FM = LoadFM.command_name;
   String CMD_SAVE_FM = SaveFM.command_name;
   String CMD_SHOW_FM = ShowFM.command_name;
-  String CMD_SHOW_FM_GRAPH = ShowFMGraph.command_name;
+  // String CMD_SHOW_FM_GRAPH = ShowFMGraph.command_name;
 
   // graph->map
   String CMD_GENERATE_MAP_GRAPH = GenerateMapGraph.command_name;

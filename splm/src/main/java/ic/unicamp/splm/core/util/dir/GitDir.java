@@ -61,7 +61,6 @@ public class GitDir {
 
   public static boolean remove_git_dir() {
     if (GitDir.exists_git_dir()) {
-
       try {
         FileUtils.deleteDirectory(GitDir.get_git_dir__as_file());
         return true;

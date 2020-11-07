@@ -28,4 +28,10 @@ public interface InfoMsgTag {
   String INFO_3__SPLM_DIR_NOT_DETECTED = "splm directory not detected";
   String INFO_3__GIT_DIR_DETECTED = "git directory detected";
   String INFO_3__GIT_DIR_NOT_DETECTED = "git directory not detected";
+
+  String INFO_3__ADDED_ROOT_FEATURE = "Added '%s' root feature";
+  String INFO_3__ADDED_FEATURE = "Added '%s' Feature";
+
+  String INFO_3__LOADED_HASHMAP = "Loaded hashmap file";
+  String INFO_3__LOADED_GRAPH = "Loaded graph file";
 }

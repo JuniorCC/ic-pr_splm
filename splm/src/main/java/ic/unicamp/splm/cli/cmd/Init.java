@@ -1,4 +1,4 @@
-package ic.unicamp.splm.cli.cmd.dir;
+package ic.unicamp.splm.cli.cmd;
 
 import ic.unicamp.splm.core.SplMgr;
 import ic.unicamp.splm.core.SplMgrBuilder;
@@ -31,12 +31,13 @@ public class Init implements Runnable {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
     if (ff) {
       splMgr.create_hard_all_dirs(); // hard means 'and remove'
+      splMgr.initGit();
     } else {
       if (splMgr.exists_splm_dir()) {
         if (f) {
           splMgr.create_hard_splm_dir();
           splMgr.create_soft_git_dir(); // soft means it not exits
-
+          splMgr.initGit();
         } else {
           SplMgrLogger.info(INFO_3__SPLM_DIR_DETECTED, true);
           SplMgrLogger.warn(WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS, true);
@@ -44,8 +45,9 @@ public class Init implements Runnable {
       } else {
         splMgr.create_splm_dir();
         splMgr.create_soft_git_dir();
+        splMgr.initGit();
       }
     }
-    splMgr.initGit();
+
   }
 }

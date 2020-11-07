@@ -1,18 +1,17 @@
 package ic.unicamp.splm.cli;
 
 import com.github.lalyos.jfiglet.FigletFont;
-import ic.unicamp.splm.cli.cmd.Clear;
-import ic.unicamp.splm.cli.cmd.Load;
-import ic.unicamp.splm.cli.cmd.Version;
-import ic.unicamp.splm.cli.cmd.dir.FileStatus;
-import ic.unicamp.splm.cli.cmd.dir.Init;
+import ic.unicamp.splm.cli.cmd.*;
 import ic.unicamp.splm.cli.cmd.dir.RemoveDir;
 import ic.unicamp.splm.cli.cmd.git.Checkout;
 import ic.unicamp.splm.cli.cmd.git.Pack;
 import ic.unicamp.splm.cli.cmd.git.Status;
 import ic.unicamp.splm.cli.cmd.graph.br.*;
 import ic.unicamp.splm.cli.cmd.graph.conf.*;
-import ic.unicamp.splm.cli.cmd.graph.fm.*;
+import ic.unicamp.splm.cli.cmd.graph.fm.InitFM;
+import ic.unicamp.splm.cli.cmd.graph.fm.LoadFM;
+import ic.unicamp.splm.cli.cmd.graph.fm.SaveFM;
+import ic.unicamp.splm.cli.cmd.graph.fm.ShowFM;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.AddConstraint;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.EditConstraint;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.ListConstraint;
@@ -40,8 +39,9 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
     subcommands = {
 
       // directory
-      FileStatus.class,
       Init.class,
+      Save.class,
+      Load.class,
       RemoveDir.class,
 
       // git
@@ -83,7 +83,7 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
       LoadFM.class,
       SaveFM.class,
       ShowFM.class,
-      ShowFMGraph.class,
+      // ShowFMGraph.class,
 
       // graph -> map
       GenerateMapGraph.class,
@@ -162,14 +162,19 @@ public class Cmd implements Runnable {
               __execute_cmd(inputs, commandLine);
               break;
             }
-
+          case CMD_SAVE:
+          {
+            CommandLine commandLine = new CommandLine(new Save());
+            __execute_cmd(inputs, commandLine);
+            break;
+          }
+          case CMD_LOAD:
+          {
+            CommandLine commandLine = new CommandLine(new Load());
+            __execute_cmd(inputs, commandLine);
+            break;
+          }
             // directory
-          case CMD_FILE_STATUS:
-            {
-              CommandLine commandLine = new CommandLine(new FileStatus());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
           case CMD_INIT:
             {
               CommandLine commandLine = new CommandLine(new Init());
@@ -361,12 +366,12 @@ public class Cmd implements Runnable {
               __execute_cmd(inputs, commandLine);
               break;
             }
-          case CMD_SHOW_FM_GRAPH:
+            /*case CMD_SHOW_FM_GRAPH:
             {
               CommandLine commandLine = new CommandLine(new ShowFMGraph());
               __execute_cmd(inputs, commandLine);
               break;
-            }
+            }*/
 
             // graph -> map
           case CMD_GENERATE_MAP_GRAPH:

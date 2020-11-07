@@ -2,6 +2,9 @@ package ic.unicamp.splm.core;
 
 import ic.unicamp.splm.core.data.DataManager;
 import ic.unicamp.splm.core.data.DataManagerBuilder;
+import ic.unicamp.splm.core.data.graph.objs.feature.FeatureMode;
+import ic.unicamp.splm.core.data.graph.objs.feature.FeatureType;
+import ic.unicamp.splm.core.data.types.HashObjectType;
 import ic.unicamp.splm.core.util.dir.GitDir;
 import ic.unicamp.splm.core.util.dir.SplmDir;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
@@ -18,6 +21,37 @@ public class SplMgr {
   public SplMgr() {
     dataManager = DataManagerBuilder.getSingletonInstance();
     gitMgr = GitMgrBuilder.getSingletonInstance();
+  }
+
+  private void __add_feature(
+      String parent,
+      String name,
+      HashObjectType hashObjectType,
+      FeatureType featureType,
+      FeatureMode featureMode) {
+    dataManager.addFeature(parent, name, hashObjectType, featureType, featureMode);
+  }
+
+  public void addOptionalFeature(String parent, String name, FeatureMode featureMode) {
+    __add_feature(parent, name, HashObjectType.OPT_FEATURE, FeatureType.OPTIONAL, featureMode);
+  }
+
+  public void addMandatoryFeature(String parent, String name, FeatureMode featureMode) {
+    __add_feature(parent, name, HashObjectType.MAN_FEATURE, FeatureType.MANDATORY, featureMode);
+  }
+
+  public void addOrFeature(String parent, String name, FeatureMode featureMode) {
+    __add_feature(parent, name, HashObjectType.OR_FEATURE, FeatureType.OR, featureMode);
+  }
+
+  public void addAlternativeFeature(String parent, String name, FeatureMode featureMode) {
+    __add_feature(
+        parent, name, HashObjectType.ALTERNATIVE_FEATURE, FeatureType.ALTERNATIVE, featureMode);
+  }
+
+  public void initFM(String name) {
+    dataManager.addRootFeature(
+        name, HashObjectType.MAN_FEATURE, FeatureType.MANDATORY, FeatureMode.CONCRETE);
   }
 
   public void remove_all_dirs() {
@@ -84,5 +118,17 @@ public class SplMgr {
 
   public void initGit() {
     gitMgr.init();
+  }
+
+  public void showRawFM() {
+    dataManager.showRawFM();
+  }
+
+  public void showFM() {
+    dataManager.showFM();
+  }
+
+  public void clearData() {
+    dataManager.clearData();
   }
 }

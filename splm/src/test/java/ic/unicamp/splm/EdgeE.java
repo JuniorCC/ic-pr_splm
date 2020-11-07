@@ -1,5 +1,6 @@
-package ic.unicamp.splm.core.data.graph;
+package ic.unicamp.splm;
 
+import ic.unicamp.splm.core.data.graph.Edge;
 import ic.unicamp.splm.core.data.types.EdgeType;
 import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -7,7 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jgrapht.graph.DefaultEdge;
 
 
-public class Edge extends DefaultEdge {
+public class EdgeE extends DefaultEdge {
 
   @Setter
   @Getter
@@ -22,18 +23,16 @@ public class Edge extends DefaultEdge {
 
     if (o == null || getClass() != o.getClass()) return false;
 
-    Edge edge = (Edge) o;
+    EdgeE edgeE = (EdgeE) o;
 
     return new EqualsBuilder()
-            .append(type, edge.type)
-            .append(id, edge.id)
+            .append(id, edgeE.id)
             .isEquals();
   }
 
   @Override
   public int hashCode() {
     return new HashCodeBuilder(17, 37)
-            .append(type)
             .append(id)
             .toHashCode();
   }
