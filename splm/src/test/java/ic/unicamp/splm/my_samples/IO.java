@@ -1,17 +1,11 @@
-package ic.unicamp.splm;
+package ic.unicamp.splm.my_samples;
 
-import ic.unicamp.splm.core.data.graph.Edge;
-import ic.unicamp.splm.core.data.graph.Vertex;
-import ic.unicamp.splm.core.data.graph.objs.feature.FeatureMode;
-import ic.unicamp.splm.core.data.graph.objs.feature.FeatureType;
 import ic.unicamp.splm.core.data.types.EdgeType;
 import ic.unicamp.splm.core.data.types.VertexType;
 import ic.unicamp.splm.core.util.dir.GraphDir;
 import ic.unicamp.splm.core.util.dir.ObjectDir;
 import ic.unicamp.splm.core.util.dir.SplmDir;
-import lombok.Data;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;

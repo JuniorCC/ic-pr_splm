@@ -48,6 +48,5 @@ public class Init implements Runnable {
         splMgr.initGit();
       }
     }
-
   }
 }

@@ -163,17 +163,17 @@ public class Cmd implements Runnable {
               break;
             }
           case CMD_SAVE:
-          {
-            CommandLine commandLine = new CommandLine(new Save());
-            __execute_cmd(inputs, commandLine);
-            break;
-          }
+            {
+              CommandLine commandLine = new CommandLine(new Save());
+              __execute_cmd(inputs, commandLine);
+              break;
+            }
           case CMD_LOAD:
-          {
-            CommandLine commandLine = new CommandLine(new Load());
-            __execute_cmd(inputs, commandLine);
-            break;
-          }
+            {
+              CommandLine commandLine = new CommandLine(new Load());
+              __execute_cmd(inputs, commandLine);
+              break;
+            }
             // directory
           case CMD_INIT:
             {

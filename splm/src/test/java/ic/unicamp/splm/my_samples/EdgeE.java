@@ -1,24 +1,20 @@
-package ic.unicamp.splm;
+package ic.unicamp.splm.my_samples;
 
-import ic.unicamp.splm.core.data.types.VertexType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import ic.unicamp.splm.core.data.types.EdgeType;
+import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jgrapht.graph.DefaultEdge;
 
 
-public class VertexV {
+public class EdgeE extends DefaultEdge {
 
-
-
-  @Getter
   @Setter
-  VertexType type;
   @Getter
+  EdgeType type;
   @Setter
-  String id;
-
+  @Getter
+  String id; // fixing hash value
 
   @Override
   public boolean equals(Object o) {
@@ -26,10 +22,10 @@ public class VertexV {
 
     if (o == null || getClass() != o.getClass()) return false;
 
-    VertexV vertexV = (VertexV) o;
+    EdgeE edgeE = (EdgeE) o;
 
     return new EqualsBuilder()
-            .append(id, vertexV.id)
+            .append(id, edgeE.id)
             .isEquals();
   }
 

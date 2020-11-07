@@ -1,4 +1,4 @@
-package ic.unicamp.splm;
+package ic.unicamp.splm.my_samples;
 
 import ic.unicamp.splm.core.data.types.EdgeType;
 import lombok.Builder;
