@@ -5,9 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import ic.unicamp.splm.core.data.graph.Edge;
 import ic.unicamp.splm.core.data.graph.Vertex;
+import ic.unicamp.splm.core.data.graph.objs.branch.Branch;
 import ic.unicamp.splm.core.data.graph.objs.feature.Feature;
 import ic.unicamp.splm.core.data.graph.objs.feature.FeatureMode;
 import ic.unicamp.splm.core.data.graph.objs.feature.FeatureType;
+import ic.unicamp.splm.core.data.graph.objs.map.Mapping;
+import ic.unicamp.splm.core.data.graph.objs.map.MappingType;
+import ic.unicamp.splm.core.data.graph.objs.product.Product;
 import ic.unicamp.splm.core.data.hash.HashValue;
 import ic.unicamp.splm.core.data.types.EdgeType;
 import ic.unicamp.splm.core.data.types.HashObjectType;
@@ -17,6 +21,7 @@ import ic.unicamp.splm.core.util.dir.HashMapDir;
 import ic.unicamp.splm.core.util.id.IDGenerator;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -24,6 +29,7 @@ import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.nio.dot.DOTImporter;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.io.File;
 import java.io.FileReader;
@@ -34,6 +40,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static ic.unicamp.splm.core.util.msg.ErrorMsgTag.ERR_1__DATA_INCONSISTENCY_BETWEEN_HASHMAP_AND_GRAPH;
 import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
 import static ic.unicamp.splm.core.util.msg.WarnMsgTag.*;
 
@@ -52,17 +59,17 @@ public class DataManager {
 
   public void addRootFeature(
       String name,
-      HashObjectType hashObjectType,
       FeatureType featureType,
       FeatureMode featureMode) {
 
-    String id = IDGenerator.generateFeatureID(name);
-    if (hashtable.containsKey(id)) {
+    String id_root_feature = IDGenerator.generateFeatureID(name);
+
+    if (hashtable.containsKey(id_root_feature)) {
       String msg = String.format(WARN_0__FEATURE_ROOT_ALREADY_EXITS, name);
       SplMgrLogger.warn(msg, true);
       return;
     }
-    __createFeatureVertex(id, name, featureType, featureMode, hashObjectType);
+    __createFeatureVertex(id_root_feature, name, featureType, featureMode);
     String msg = String.format(INFO_3__ADDED_ROOT_FEATURE, name);
     SplMgrLogger.info(msg, true);
   }
@@ -70,7 +77,6 @@ public class DataManager {
   public void addFeature(
       String base,
       String name,
-      HashObjectType hashObjectType,
       FeatureType featureType,
       FeatureMode featureMode) {
 
@@ -86,8 +92,16 @@ public class DataManager {
       SplMgrLogger.warn(msg, true);
       return;
     }
-    Vertex new_vertex = __createFeatureVertex(id, name, featureType, featureMode, hashObjectType);
-    __addFeatureEdge(id_base, new_vertex);
+
+    Vertex new_vertex = __createFeatureVertex(id, name, featureType, featureMode);
+    Vertex base_vertex = __retrieveVertexById(id_base);
+    __addFeatureEdge(base_vertex, new_vertex);
+
+    // or property
+    if (featureType.equals(FeatureType.OR)) {
+      Feature parent = (Feature) hashtable.get(id_base).getObject();
+      parent.setOrParent(true);
+    }
 
     String msg = String.format(INFO_3__ADDED_FEATURE, name);
     SplMgrLogger.info(msg, true);
@@ -96,6 +110,28 @@ public class DataManager {
   public void loadData() {
     loadHashMapData();
     loadGraphData();
+  }
+
+  private void __addFeatureEdge(Vertex base_vertex, Vertex new_vertex) {
+
+    __addEdge(base_vertex, new_vertex, EdgeType.FEATURE);
+  }
+
+  private void __addBranchEdge(Vertex base_vertex, Vertex new_vertex) {
+    __addEdge(base_vertex, new_vertex, EdgeType.BRANCH);
+  }
+
+  private void __addMappingEdge(Vertex base_vertex, Vertex new_vertex) {
+    __addEdge(base_vertex, new_vertex, EdgeType.MAPPING);
+  }
+
+  private void __addEdge(Vertex base_vertex, Vertex new_vertex, EdgeType edgeType) {
+
+    String edge_id = String.format("(%s->%s)", base_vertex.getId(), new_vertex.getId());
+    Edge edge = new Edge();
+    edge.setId(edge_id);
+    edge.setType(edgeType);
+    graph.addEdge(base_vertex, new_vertex, edge);
   }
 
   private void loadGraphData() {
@@ -107,81 +143,6 @@ public class DataManager {
     }
   }
 
-  /*  private void __loadGraphData() {
-  JSONImporter<Vertex, Edge> importer = new JSONImporter<>();
-
-  importer.addVertexAttributeConsumer((p, atr_value) -> {
-    Vertex vertex = p.getFirst();
-
-    String atr = p.getSecond();
-    switch (atr) {
-      case "v_id":
-        vertex.setId(atr_value.getValue());
-        break;
-      case "v_type":
-        switch (atr_value.getValue()) {
-          case "BRANCH":
-            vertex.setType(VertexType.BRANCH);
-            break;
-          case "FEATURE":
-            vertex.setType(VertexType.FEATURE);
-            break;
-          case "PRODUCT":
-            vertex.setType(VertexType.PRODUCT);
-            break;
-          case "MAPPING":
-            vertex.setType(VertexType.MAPPING);
-            break;
-          default:
-            throw new IllegalStateException("Unexpected value: " + atr_value.getValue());
-        }
-        break;
-    }
-   });
-  importer.addEdgeAttributeConsumer((p, atr_value) -> {
-    Edge edge = p.getFirst();
-    String atr = p.getSecond();
-    switch (atr) {
-      case "e_id":
-        edge.setId(atr_value.getValue());
-        break;
-      case "e_type":
-        switch (atr_value.getValue()) {
-          case "BRANCH":
-            edge.setType(EdgeType.BRANCH);
-            break;
-          case "FEATURE":
-            edge.setType(EdgeType.FEATURE);
-            break;
-          case "PRODUCT":
-            edge.setType(EdgeType.PRODUCT);
-            break;
-          case "MAPPING":
-            edge.setType(EdgeType.MAPPING);
-            break;
-          default:
-            throw new IllegalStateException("Unexpected value: " + atr_value.getValue());
-        }
-        break;
-    }
-  });
-  //Function<String, V> stringVFunction = ;
-  Function<String,Vertex> function = id -> Vertex.builder().id(id).type(null).build();
-  importer.setVertexFactory(function);
-  */
-  /*Consumer<Edge> consumer = new Consumer<Edge>() {
-    @Override
-    public void accept(Edge edge) {
-
-    }
-  };
-  importer.addEdgeConsumer(consumer);*/
-  /*
-    //importer.
-    File graphFile = GraphDir.get_splm_obj_graph_file__as_file();
-    DefaultDirectedGraph<Vertex, Edge> graph2 = new DefaultDirectedGraph<>(Edge.class);;
-    importer.importGraph(graph2, graphFile);
-  }*/
   private void __loadGraphData() {
     DOTImporter<Vertex, Edge> importer = new DOTImporter<>();
     Function<String, Vertex> importer_v_func =
@@ -250,7 +211,6 @@ public class DataManager {
 
     File graphFile = GraphDir.get_splm_obj_graph_file__as_file();
     DefaultDirectedGraph<Vertex, Edge> graph2 = new DefaultDirectedGraph<>(Edge.class);
-    ;
     importer.importGraph(graph2, graphFile);
 
     graph = graph2;
@@ -287,52 +247,13 @@ public class DataManager {
   private void saveGraphData() {
     if (GraphDir.exists_splm_obj_graph_file()) {
       __saveGraphData();
+
     } else {
       GraphDir.create_splm_obj_graph_file_with_msg();
       __saveGraphData();
     }
   }
 
-  /*  private void __saveGraphData() {
-  // GraphExporter
-  JSONExporter<Vertex, Edge> jsonExporter = new JSONExporter<>();
-
-  jsonExporter.setVertexAttributeProvider(v -> {
-    Map<String, Attribute> m = new HashMap<>();
-    if (v.getId() != null) {
-      m.put("v_id", DefaultAttribute.createAttribute(v.getId()));
-    }
-    if (v.getType() != null) {
-      m.put("v_type", DefaultAttribute.createAttribute(v.getType().toString()));
-    }
-    return m;
-  });
-  jsonExporter.setEdgeAttributeProvider(v -> {
-    Map<String, Attribute> m = new HashMap<>();
-    if (v.getId() != null) {
-      m.put("e_id", DefaultAttribute.createAttribute(v.getId()));
-    }
-    if (v.getType() != null) {
-      m.put("e_type", DefaultAttribute.createAttribute(v.getType().toString()));
-    }
-    return m;
-  });
-  File graphFile = GraphDir.get_splm_obj_graph_file__as_file();
-
-  jsonExporter.exportGraph(graph, graphFile);
-
-  */
-  /*exporter.setExportEdgeWeights(true);
-  jsonExporter.setEdgeAttributeProvider(e -> {
-    Map<String, Attribute> attribs = new HashMap<>();
-    attribs.put("label", new DefaultAttribute<String>(e.getLabel(), AttributeType.STRING));
-    return attribs;
-  });
-
-  FileWriter fileWriter = new FileWriter(String.valueOf(GraphDir.get_splm_obj_graph_file__as_path()));
-  gson.toJson(graph, fileWriter);*/
-  /*
-  }*/
   private void __saveGraphData() {
     DOTExporter<Vertex, Edge> exporter = new DOTExporter<>();
 
@@ -381,8 +302,6 @@ public class DataManager {
     try {
       FileWriter fileWriter =
           new FileWriter(String.valueOf(HashMapDir.get_splm_obj_hash_map_file__as_path()));
-      String json = "";
-      json = gson.toJson(hashtable);
       gson.toJson(hashtable, fileWriter);
       fileWriter.flush();
     } catch (IOException e) {
@@ -390,34 +309,64 @@ public class DataManager {
     }
   }
 
-  private void __addFeatureEdge(String id_base, Vertex new_vertex) {
-    __addEdge(id_base, new_vertex, EdgeType.FEATURE);
-  }
-
-  private void __addBranchEdge(String id_base, Vertex new_vertex) {
-    __addEdge(id_base, new_vertex, EdgeType.BRANCH);
-  }
-
-  private void __addEdge(String id_base, Vertex new_vertex, EdgeType edgeType) {
-    Vertex base_vertex = __retrieveVertexById(id_base);
-    String edge_id = String.format("(%s->%s)", id_base, new_vertex.getId());
-    Edge edge = new Edge();
-    edge.setId(edge_id);
-    edge.setType(edgeType);
-    graph.addEdge(base_vertex, new_vertex, edge);
-  }
-
   private Vertex __createFeatureVertex(
       String id,
       String name,
       FeatureType featureType,
-      FeatureMode featureMode,
-      HashObjectType hashObjectType) {
-    Feature feature = Feature.builder().mode(featureMode).type(featureType).name(name).build();
-    HashValue hashValue = HashValue.builder().type(hashObjectType).object(feature).build();
+      FeatureMode featureMode
+     ) {
+    Feature feature =
+        Feature.builder().mode(featureMode).type(featureType).name(name).orParent(false).build();
+    HashValue hashValue = HashValue.builder().type(HashObjectType.FEATURE).object(feature).build();
     Vertex new_vertex = new Vertex();
     new_vertex.setId(id);
     new_vertex.setType(VertexType.FEATURE);
+
+    hashtable.put(id, hashValue);
+    graph.addVertex(new_vertex);
+    return new_vertex;
+  }
+
+  private Vertex __createBranchVertex(
+          String id,
+          String name) {
+    Branch branch =
+            Branch.builder().name(name).build();
+    HashValue hashValue = HashValue.builder().type(HashObjectType.BRANCH).object(branch).build();
+    Vertex new_vertex = new Vertex();
+    new_vertex.setId(id);
+    new_vertex.setType(VertexType.BRANCH);
+
+    hashtable.put(id, hashValue);
+    graph.addVertex(new_vertex);
+    return new_vertex;
+  }
+
+
+  private Vertex __createMappingVertex(
+          String id,
+          String name) {
+    Mapping mapping =
+            Mapping.builder().name(name).type(MappingType.Feature_Branch).build();
+    HashValue hashValue = HashValue.builder().type(HashObjectType.MAPPING).object(mapping).build();
+    Vertex new_vertex = new Vertex();
+    new_vertex.setId(id);
+    new_vertex.setType(VertexType.MAPPING);
+
+    hashtable.put(id, hashValue);
+    graph.addVertex(new_vertex);
+    return new_vertex;
+  }
+
+  private Vertex __createProductVertex(
+          String id,
+          String name) {
+    Product product =
+            Product.builder().name(name).build();
+    HashValue hashValue = HashValue.builder().type(HashObjectType.PRODUCT).object(product).build();
+    Vertex new_vertex = new Vertex();
+    new_vertex.setId(id);
+    new_vertex.setType(VertexType.PRODUCT);
 
     hashtable.put(id, hashValue);
     graph.addVertex(new_vertex);
@@ -442,6 +391,26 @@ public class DataManager {
   }
 
   public void __showFM(boolean raw) {
+    Graph<Vertex, Edge> subgraph = reduceGraphToFMGraph();
+
+    List<Vertex> vertexList =
+        subgraph.vertexSet().stream()
+            .sorted(Comparator.comparingInt(subgraph::outDegreeOf))
+            .collect(Collectors.toList());
+    vertexList.forEach(
+        vertex -> {
+          Set<Edge> outgoing_Edges = subgraph.outgoingEdgesOf(vertex);
+          StringBuilder stringBuilder = new StringBuilder();
+          stringBuilder.append(String.format("%S ->", vertex.getId()));
+          for (Edge item : outgoing_Edges) {
+            stringBuilder.append(" ").append(subgraph.getEdgeTarget(item).getId()).append(",");
+          }
+          SplMgrLogger.info(stringBuilder.toString(), false);
+        });
+  }
+
+  @NotNull
+  private Graph<Vertex, Edge> reduceGraphToFMGraph() {
     Set<Vertex> vertices =
         graph.vertexSet().stream()
             .filter(vertex -> vertex.getType().equals(VertexType.FEATURE))
@@ -454,21 +423,7 @@ public class DataManager {
             .filter(edge -> !edge.getType().equals(EdgeType.FEATURE))
             .collect(Collectors.toSet());
     subgraph2.removeAllEdges(edges_to_remove);
-
-    List<Vertex> vertexList =
-        subgraph2.vertexSet().stream()
-            .sorted(Comparator.comparingInt(subgraph2::outDegreeOf))
-            .collect(Collectors.toList());
-    vertexList.forEach(
-        vertex -> {
-          Set<Edge> outgoing_Edges = subgraph2.outgoingEdgesOf(vertex);
-          StringBuilder stringBuilder = new StringBuilder();
-          stringBuilder.append(String.format("%S ->", vertex.getId()));
-          for (Edge item : outgoing_Edges) {
-            stringBuilder.append(" ").append(subgraph2.getEdgeTarget(item).getId()).append(",");
-          }
-          SplMgrLogger.info(stringBuilder.toString(), false);
-        });
+    return subgraph2;
   }
 
   public void clearData() {
@@ -476,4 +431,68 @@ public class DataManager {
     graph = new DefaultDirectedGraph<>(Edge.class);
     ;
   }
+
+  private void __generateNodes(Graph<Vertex, Edge> subgraph) {
+    BreadthFirstIterator<Vertex, Edge> bfs = new BreadthFirstIterator<>(subgraph);
+    while (bfs.hasNext()) {
+      Vertex vertex = bfs.next();
+      Vertex parentVertex = bfs.getParent(vertex);
+      Feature parentFeature = __retrieveFeature(parentVertex);
+      Feature feature = __retrieveFeature(vertex);
+      __createMapAndBrVertex(parentVertex, parentFeature, vertex, feature);
+    }
+  }
+
+  private Feature __retrieveFeature(Vertex vertex) {
+    if (vertex != null) {
+      if (vertex.getType() == VertexType.FEATURE) {
+        HashValue hashValue = hashtable.get(vertex.getId());
+        if (hashValue.getType() == HashObjectType.FEATURE) {
+          return (Feature) hashValue.getObject();
+        } else {
+          SplMgrLogger.error(ERR_1__DATA_INCONSISTENCY_BETWEEN_HASHMAP_AND_GRAPH, true);
+        }
+      } else {
+        SplMgrLogger.warn(WARN_1__SUBGRAPH_MALFORMED, true);
+      }
+    }
+    return null;
+  }
+
+  private void __createMapAndBrVertex(
+      Vertex parentVertex, Feature parentFeature, Vertex vertex, Feature feature) {
+    String name = feature.getName();
+
+    String id_map = IDGenerator.generateMappingID(name);
+    String id_branch = IDGenerator.generateBranchID(name);
+    String id_vBranch = IDGenerator.generateVBranchID(name);
+
+    Vertex map_vertex = __createMappingVertex(id_map, name);
+    Vertex br_vertex = __createBranchVertex(id_branch, id_branch);
+
+    __addMappingEdge(vertex, map_vertex);
+    __addMappingEdge(map_vertex, br_vertex);
+
+    if (feature.isOrParent()) {
+      Vertex vbr_vertex = __createBranchVertex(id_vBranch, id_vBranch);
+      __addMappingEdge(map_vertex, vbr_vertex);
+
+      __addBranchEdge(br_vertex, vbr_vertex);
+    }
+
+    if (parentVertex != null) {
+        String parentName = parentFeature.getName();
+        Vertex p_vertex;
+        if (parentFeature.isOrParent()) {
+          String parent_id_vBranch = IDGenerator.generateVBranchID(parentName);
+          p_vertex = __retrieveVertexById(parent_id_vBranch);
+        }else{
+          String parent_id_branch = IDGenerator.generateBranchID(parentName);
+          p_vertex = __retrieveVertexById(parent_id_branch);
+        }
+      __addBranchEdge(p_vertex, br_vertex);
+    }
+  }
+
+
 }

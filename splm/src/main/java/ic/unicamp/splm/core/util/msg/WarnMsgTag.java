@@ -1,6 +1,8 @@
 package ic.unicamp.splm.core.util.msg;
 
 public interface WarnMsgTag {
+  String WARN_1__SUBGRAPH_MALFORMED = "Subgraph Malformed";
+
   String WARN_0__FEATURE_ROOT_ALREADY_EXITS = "Root Feature '%s' already exits in our DB";
   String WARN_1__FEATURE_PARENT_DOES_NOT_EXITS = "Parent Feature '%s' does not exits in our DB";
   String WARN_2__FEATURE_ALREADY_EXITS = "Feature '%s; already exits in our DB";

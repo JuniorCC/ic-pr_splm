@@ -86,7 +86,7 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
       // ShowFMGraph.class,
 
       // graph -> map
-      GenerateMapGraph.class,
+      GenerateMap.class,
       LoadMap.class,
       SaveMap.class,
       ShowMap.class,
@@ -376,7 +376,7 @@ public class Cmd implements Runnable {
             // graph -> map
           case CMD_GENERATE_MAP_GRAPH:
             {
-              CommandLine commandLine = new CommandLine(new GenerateMapGraph());
+              CommandLine commandLine = new CommandLine(new GenerateMap());
               __execute_cmd(inputs, commandLine);
               break;
             }

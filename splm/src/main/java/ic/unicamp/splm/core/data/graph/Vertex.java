@@ -8,8 +8,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Vertex {
 
-  @Getter @Setter VertexType type;
   @Getter @Setter String id;
+  @Getter @Setter VertexType type;
 
   @Override
   public boolean equals(Object o) {

@@ -26,32 +26,31 @@ public class SplMgr {
   private void __add_feature(
       String parent,
       String name,
-      HashObjectType hashObjectType,
       FeatureType featureType,
       FeatureMode featureMode) {
-    dataManager.addFeature(parent, name, hashObjectType, featureType, featureMode);
+    dataManager.addFeature(parent, name, featureType, featureMode);
   }
 
   public void addOptionalFeature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(parent, name, HashObjectType.OPT_FEATURE, FeatureType.OPTIONAL, featureMode);
+    __add_feature(parent, name,  FeatureType.OPTIONAL, featureMode);
   }
 
   public void addMandatoryFeature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(parent, name, HashObjectType.MAN_FEATURE, FeatureType.MANDATORY, featureMode);
+    __add_feature(parent, name, FeatureType.MANDATORY, featureMode);
   }
 
   public void addOrFeature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(parent, name, HashObjectType.OR_FEATURE, FeatureType.OR, featureMode);
+    __add_feature(parent, name, FeatureType.OR, featureMode);
   }
 
   public void addAlternativeFeature(String parent, String name, FeatureMode featureMode) {
     __add_feature(
-        parent, name, HashObjectType.ALTERNATIVE_FEATURE, FeatureType.ALTERNATIVE, featureMode);
+        parent, name,  FeatureType.ALTERNATIVE, featureMode);
   }
 
   public void initFM(String name) {
     dataManager.addRootFeature(
-        name, HashObjectType.MAN_FEATURE, FeatureType.MANDATORY, FeatureMode.CONCRETE);
+        name, FeatureType.MANDATORY, FeatureMode.CONCRETE);
   }
 
   public void remove_all_dirs() {
@@ -130,5 +129,9 @@ public class SplMgr {
 
   public void clearData() {
     dataManager.clearData();
+  }
+
+  public void generateMap() {
+
   }
 }

@@ -76,7 +76,7 @@ public interface CmdTag {
   // String CMD_SHOW_FM_GRAPH = ShowFMGraph.command_name;
 
   // graph->map
-  String CMD_GENERATE_MAP_GRAPH = GenerateMapGraph.command_name;
+  String CMD_GENERATE_MAP_GRAPH = GenerateMap.command_name;
   String CMD_LOAD_MAP = LoadMap.command_name;
   String CMD_SAVE_MAP = SaveMap.command_name;
   String CMD_SHOW_MAP = ShowMap.command_name;
