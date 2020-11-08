@@ -1,6 +1,8 @@
 package ic.unicamp.splm.core.util.msg;
 
 public interface InfoMsgTag {
+  String INF_0__ENDING_FROM_PROMPT = "Ending prompt";
+
   String INF_0__SPLM_ART_ASCII = " SPL Mgr";
   String INF_0__SPLM_VERSION = "SPLM Version: 1.0";
   String INF_0__SPLM_AUTHOR = "Author: Junior Cupe Casquina";

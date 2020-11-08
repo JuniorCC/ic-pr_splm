@@ -57,10 +57,7 @@ public class DataManager {
     gson = new GsonBuilder().setPrettyPrinting().create();
   }
 
-  public void addRootFeature(
-      String name,
-      FeatureType featureType,
-      FeatureMode featureMode) {
+  public void addRootFeature(String name, FeatureType featureType, FeatureMode featureMode) {
 
     String id_root_feature = IDGenerator.generateFeatureID(name);
 
@@ -75,10 +72,7 @@ public class DataManager {
   }
 
   public void addFeature(
-      String base,
-      String name,
-      FeatureType featureType,
-      FeatureMode featureMode) {
+      String base, String name, FeatureType featureType, FeatureMode featureMode) {
 
     String id_base = IDGenerator.generateFeatureID(base);
     String id = IDGenerator.generateFeatureID(name);
@@ -310,11 +304,7 @@ public class DataManager {
   }
 
   private Vertex __createFeatureVertex(
-      String id,
-      String name,
-      FeatureType featureType,
-      FeatureMode featureMode
-     ) {
+      String id, String name, FeatureType featureType, FeatureMode featureMode) {
     Feature feature =
         Feature.builder().mode(featureMode).type(featureType).name(name).orParent(false).build();
     HashValue hashValue = HashValue.builder().type(HashObjectType.FEATURE).object(feature).build();
@@ -327,11 +317,8 @@ public class DataManager {
     return new_vertex;
   }
 
-  private Vertex __createBranchVertex(
-          String id,
-          String name) {
-    Branch branch =
-            Branch.builder().name(name).build();
+  private Vertex __createBranchVertex(String id, String name) {
+    Branch branch = Branch.builder().name(name).build();
     HashValue hashValue = HashValue.builder().type(HashObjectType.BRANCH).object(branch).build();
     Vertex new_vertex = new Vertex();
     new_vertex.setId(id);
@@ -342,12 +329,8 @@ public class DataManager {
     return new_vertex;
   }
 
-
-  private Vertex __createMappingVertex(
-          String id,
-          String name) {
-    Mapping mapping =
-            Mapping.builder().name(name).type(MappingType.Feature_Branch).build();
+  private Vertex __createMappingVertex(String id, String name) {
+    Mapping mapping = Mapping.builder().name(name).type(MappingType.Feature_Branch).build();
     HashValue hashValue = HashValue.builder().type(HashObjectType.MAPPING).object(mapping).build();
     Vertex new_vertex = new Vertex();
     new_vertex.setId(id);
@@ -358,11 +341,8 @@ public class DataManager {
     return new_vertex;
   }
 
-  private Vertex __createProductVertex(
-          String id,
-          String name) {
-    Product product =
-            Product.builder().name(name).build();
+  private Vertex __createProductVertex(String id, String name) {
+    Product product = Product.builder().name(name).build();
     HashValue hashValue = HashValue.builder().type(HashObjectType.PRODUCT).object(product).build();
     Vertex new_vertex = new Vertex();
     new_vertex.setId(id);
@@ -415,15 +395,14 @@ public class DataManager {
         graph.vertexSet().stream()
             .filter(vertex -> vertex.getType().equals(VertexType.FEATURE))
             .collect(Collectors.toSet());
-    // Graph<Vertex, Edge> subgraph = new AsSubgraph<>(graph, vertices, edges); function is not
-    // working
-    Graph<Vertex, Edge> subgraph2 = new AsSubgraph<>(graph, vertices);
+    // new AsSubgraph<>(graph, vertices, edges); function is not working well
+    Graph<Vertex, Edge> fm_subgraph = new AsSubgraph<>(graph, vertices);
     Set<Edge> edges_to_remove =
         graph.edgeSet().stream()
             .filter(edge -> !edge.getType().equals(EdgeType.FEATURE))
             .collect(Collectors.toSet());
-    subgraph2.removeAllEdges(edges_to_remove);
-    return subgraph2;
+    fm_subgraph.removeAllEdges(edges_to_remove);
+    return fm_subgraph;
   }
 
   public void clearData() {
@@ -432,14 +411,14 @@ public class DataManager {
     ;
   }
 
-  private void __generateNodes(Graph<Vertex, Edge> subgraph) {
+  private void __genMapAndBrVertexes(Graph<Vertex, Edge> subgraph) {
     BreadthFirstIterator<Vertex, Edge> bfs = new BreadthFirstIterator<>(subgraph);
     while (bfs.hasNext()) {
       Vertex vertex = bfs.next();
       Vertex parentVertex = bfs.getParent(vertex);
       Feature parentFeature = __retrieveFeature(parentVertex);
       Feature feature = __retrieveFeature(vertex);
-      __createMapAndBrVertex(parentVertex, parentFeature, vertex, feature);
+      __createMapAndBrVertexes(parentVertex, parentFeature, vertex, feature);
     }
   }
 
@@ -459,7 +438,7 @@ public class DataManager {
     return null;
   }
 
-  private void __createMapAndBrVertex(
+  private void __createMapAndBrVertexes(
       Vertex parentVertex, Feature parentFeature, Vertex vertex, Feature feature) {
     String name = feature.getName();
 
@@ -481,18 +460,21 @@ public class DataManager {
     }
 
     if (parentVertex != null) {
-        String parentName = parentFeature.getName();
-        Vertex p_vertex;
-        if (parentFeature.isOrParent()) {
-          String parent_id_vBranch = IDGenerator.generateVBranchID(parentName);
-          p_vertex = __retrieveVertexById(parent_id_vBranch);
-        }else{
-          String parent_id_branch = IDGenerator.generateBranchID(parentName);
-          p_vertex = __retrieveVertexById(parent_id_branch);
-        }
+      String parentName = parentFeature.getName();
+      Vertex p_vertex;
+      if (parentFeature.isOrParent()) {
+        String parent_id_vBranch = IDGenerator.generateVBranchID(parentName);
+        p_vertex = __retrieveVertexById(parent_id_vBranch);
+      } else {
+        String parent_id_branch = IDGenerator.generateBranchID(parentName);
+        p_vertex = __retrieveVertexById(parent_id_branch);
+      }
       __addBranchEdge(p_vertex, br_vertex);
     }
   }
 
-
+  public void fulfillGraph() {
+    Graph<Vertex, Edge> fm_subgraph = reduceGraphToFMGraph();
+    __genMapAndBrVertexes(fm_subgraph);
+  }
 }

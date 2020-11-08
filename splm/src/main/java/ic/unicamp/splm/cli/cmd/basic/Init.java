@@ -1,4 +1,4 @@
-package ic.unicamp.splm.cli.cmd;
+package ic.unicamp.splm.cli.cmd.basic;
 
 import ic.unicamp.splm.core.SplMgr;
 import ic.unicamp.splm.core.SplMgrBuilder;

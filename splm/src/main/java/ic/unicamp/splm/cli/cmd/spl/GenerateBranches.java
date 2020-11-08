@@ -1,5 +1,7 @@
 package ic.unicamp.splm.cli.cmd.spl;
 
+import ic.unicamp.splm.core.SplMgr;
+import ic.unicamp.splm.core.SplMgrBuilder;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "generate-branches")
@@ -8,7 +10,6 @@ public class GenerateBranches implements Runnable {
 
   @Override
   public void run() {
-    /*    SplMgr SplMgr = SplMgrBuilder.getSingletonInstance();
-    SplMgr.generateGitBranches();*/
+   SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
   }
 }

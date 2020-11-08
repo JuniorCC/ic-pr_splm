@@ -1,6 +1,7 @@
 package ic.unicamp.splm.core.data.graph.objs.feature;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Builder
 @Data

@@ -4,7 +4,6 @@ import ic.unicamp.splm.core.data.DataManager;
 import ic.unicamp.splm.core.data.DataManagerBuilder;
 import ic.unicamp.splm.core.data.graph.objs.feature.FeatureMode;
 import ic.unicamp.splm.core.data.graph.objs.feature.FeatureType;
-import ic.unicamp.splm.core.data.types.HashObjectType;
 import ic.unicamp.splm.core.util.dir.GitDir;
 import ic.unicamp.splm.core.util.dir.SplmDir;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
@@ -24,15 +23,12 @@ public class SplMgr {
   }
 
   private void __add_feature(
-      String parent,
-      String name,
-      FeatureType featureType,
-      FeatureMode featureMode) {
+      String parent, String name, FeatureType featureType, FeatureMode featureMode) {
     dataManager.addFeature(parent, name, featureType, featureMode);
   }
 
   public void addOptionalFeature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(parent, name,  FeatureType.OPTIONAL, featureMode);
+    __add_feature(parent, name, FeatureType.OPTIONAL, featureMode);
   }
 
   public void addMandatoryFeature(String parent, String name, FeatureMode featureMode) {
@@ -44,13 +40,11 @@ public class SplMgr {
   }
 
   public void addAlternativeFeature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(
-        parent, name,  FeatureType.ALTERNATIVE, featureMode);
+    __add_feature(parent, name, FeatureType.ALTERNATIVE, featureMode);
   }
 
   public void initFM(String name) {
-    dataManager.addRootFeature(
-        name, FeatureType.MANDATORY, FeatureMode.CONCRETE);
+    dataManager.addRootFeature(name, FeatureType.MANDATORY, FeatureMode.CONCRETE);
   }
 
   public void remove_all_dirs() {
@@ -131,7 +125,16 @@ public class SplMgr {
     dataManager.clearData();
   }
 
-  public void generateMap() {
 
+  public void showBrM() {
+
+  }
+
+  public void showPrM() {
+
+  }
+
+  public void fulfillGraph() {
+    dataManager.fulfillGraph();
   }
 }

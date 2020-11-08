@@ -10,7 +10,7 @@ public class InitFM implements Runnable {
 
   @CommandLine.Parameters(
       paramLabel = "name",
-      description = "name of the feature",
+      description = "root feature name",
       defaultValue = "Base")
   String name;
 

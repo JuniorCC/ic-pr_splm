@@ -1,27 +1,28 @@
 package ic.unicamp.splm.cli;
 
 import com.github.lalyos.jfiglet.FigletFont;
-import ic.unicamp.splm.cli.cmd.*;
+import ic.unicamp.splm.cli.cmd.basic.Exit;
+import ic.unicamp.splm.cli.cmd.basic.Init;
+import ic.unicamp.splm.cli.cmd.basic.Version;
+import ic.unicamp.splm.cli.cmd.data.ClearData;
+import ic.unicamp.splm.cli.cmd.data.LoadData;
+import ic.unicamp.splm.cli.cmd.data.SaveData;
 import ic.unicamp.splm.cli.cmd.dir.RemoveDir;
 import ic.unicamp.splm.cli.cmd.git.Checkout;
 import ic.unicamp.splm.cli.cmd.git.Pack;
 import ic.unicamp.splm.cli.cmd.git.Status;
 import ic.unicamp.splm.cli.cmd.graph.br.*;
-import ic.unicamp.splm.cli.cmd.graph.conf.*;
+import ic.unicamp.splm.cli.cmd.graph.pr.*;
 import ic.unicamp.splm.cli.cmd.graph.fm.InitFM;
-import ic.unicamp.splm.cli.cmd.graph.fm.LoadFM;
-import ic.unicamp.splm.cli.cmd.graph.fm.SaveFM;
 import ic.unicamp.splm.cli.cmd.graph.fm.ShowFM;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.AddConstraint;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.EditConstraint;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.ListConstraint;
 import ic.unicamp.splm.cli.cmd.graph.fm.constraint.RemoveConstraint;
 import ic.unicamp.splm.cli.cmd.graph.fm.feature.*;
-import ic.unicamp.splm.cli.cmd.graph.map.*;
+import ic.unicamp.splm.cli.cmd.graph.mp.*;
 import ic.unicamp.splm.cli.cmd.spl.CheckConflict;
 import ic.unicamp.splm.cli.cmd.spl.GenerateBranches;
-import ic.unicamp.splm.cli.cmd.spl.GenerateProducts;
-import ic.unicamp.splm.cli.cmd.spl.ListProducts;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import picocli.CommandLine;
 
@@ -37,33 +38,34 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
     header = {},
     description = {"", "An SPL manager that internally use git", ""},
     subcommands = {
+      // basic
+      Exit.class,
+      Init.class, // dir
+      Version.class,
 
-      // directory
-      Init.class,
-      Save.class,
-      Load.class,
+      // data
+      ClearData.class,
+      LoadData.class,
+      SaveData.class,
+
+      // dir
       RemoveDir.class,
 
       // git
       Checkout.class,
-      // Commit.class,
       Pack.class,
       Status.class,
 
-      // graph -> br
-      GenerateBrGraph.class,
-      LoadBr.class,
-      SaveBr.class,
-      ShowBr.class,
-      ShowBrGraph.class,
+      // data -> br
+      ShowBrM.class,
 
       // graph -> conf
-      AddProdConf.class,
+      AddProduct.class,
       GenerateConfTable.class,
       LoadConf.class,
       RemoveProdConf.class,
       SaveConf.class,
-      ShowConf.class,
+      ShowPrM.class,
 
       // graph -> fm -> constraint
       AddConstraint.class,
@@ -89,7 +91,7 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
       GenerateMap.class,
       LoadMap.class,
       SaveMap.class,
-      ShowMap.class,
+      ShowMpM.class,
       ShowMapGraph.class,
 
       // spl
@@ -97,10 +99,6 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
       GenerateBranches.class,
       GenerateProducts.class,
       ListProducts.class,
-
-      // basic
-      Clear.class,
-      Version.class,
     })
 public class Cmd implements Runnable {
 
@@ -117,7 +115,7 @@ public class Cmd implements Runnable {
 
   private void __run_default_commands() {
     CommandLine cmd_version = new CommandLine(new Version());
-    CommandLine cmd_load = new CommandLine(new Load());
+    CommandLine cmd_load = new CommandLine(new LoadData());
     SplMgrLogger.info(INF_0__SPLM_AUTHOR, true);
     cmd_version.execute();
     __print_scanning_files();
@@ -144,15 +142,17 @@ public class Cmd implements Runnable {
         String command = inputs.get(0);
         switch (command) {
             // basic
+
           case CMD_EXIT:
             {
               alive = false;
-              __execute_cmd(inputs, null);
+              CommandLine commandLine = new CommandLine(new Exit());
+              __execute_cmd(inputs, commandLine);
               break;
             }
-          case CMD_CLEAR:
+          case CMD_INIT:
             {
-              CommandLine commandLine = new CommandLine(new Clear());
+              CommandLine commandLine = new CommandLine(new Init());
               __execute_cmd(inputs, commandLine);
               break;
             }
@@ -162,25 +162,30 @@ public class Cmd implements Runnable {
               __execute_cmd(inputs, commandLine);
               break;
             }
-          case CMD_SAVE:
+
+            // data
+
+          case CMD_CLEAR_DATA:
             {
-              CommandLine commandLine = new CommandLine(new Save());
+              CommandLine commandLine = new CommandLine(new ClearData());
               __execute_cmd(inputs, commandLine);
               break;
             }
-          case CMD_LOAD:
+          case CMD_LOAD_DATA:
             {
-              CommandLine commandLine = new CommandLine(new Load());
+              CommandLine commandLine = new CommandLine(new LoadData());
               __execute_cmd(inputs, commandLine);
               break;
             }
-            // directory
-          case CMD_INIT:
+          case CMD_SAVE_DATA:
             {
-              CommandLine commandLine = new CommandLine(new Init());
+              CommandLine commandLine = new CommandLine(new SaveData());
               __execute_cmd(inputs, commandLine);
               break;
             }
+
+            // dir
+
           case CMD_REMOVE_DIR:
             {
               CommandLine commandLine = new CommandLine(new RemoveDir());
@@ -195,11 +200,6 @@ public class Cmd implements Runnable {
               __execute_cmd(inputs, commandLine);
               break;
             }
-            // case COMMIT: {
-            //    CommandLine commandLine = new CommandLine(new Commit());
-            //    execute_command(inputs, commandLine);
-            //    break;
-            // }
           case CMD_PACK:
             {
               CommandLine commandLine = new CommandLine(new Pack());
@@ -213,34 +213,10 @@ public class Cmd implements Runnable {
               break;
             }
 
-            // graph -> br
-          case CMD_GENERATE_BR_GRAPH:
+            // data -> br
+          case CMD_SHOW_BRM:
             {
-              CommandLine commandLine = new CommandLine(new GenerateBrGraph());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_LOAD_BR:
-            {
-              CommandLine commandLine = new CommandLine(new LoadBr());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_SAVE_BR:
-            {
-              CommandLine commandLine = new CommandLine(new SaveBr());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_SHOW_BR:
-            {
-              CommandLine commandLine = new CommandLine(new ShowBr());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_SHOW_BR_GRAPH:
-            {
-              CommandLine commandLine = new CommandLine(new ShowBrGraph());
+              CommandLine commandLine = new CommandLine(new ShowBrM());
               __execute_cmd(inputs, commandLine);
               break;
             }
@@ -248,7 +224,7 @@ public class Cmd implements Runnable {
             // graph -> conf
           case CMD_ADD_PROD_CONF:
             {
-              CommandLine commandLine = new CommandLine(new AddProdConf());
+              CommandLine commandLine = new CommandLine(new AddProduct());
               __execute_cmd(inputs, commandLine);
               break;
             }
@@ -278,7 +254,7 @@ public class Cmd implements Runnable {
             }
           case CMD_SHOW_CONF:
             {
-              CommandLine commandLine = new CommandLine(new ShowConf());
+              CommandLine commandLine = new CommandLine(new ShowPrM());
               __execute_cmd(inputs, commandLine);
               break;
             }
@@ -394,7 +370,7 @@ public class Cmd implements Runnable {
             }
           case CMD_SHOW_MAP:
             {
-              CommandLine commandLine = new CommandLine(new ShowMap());
+              CommandLine commandLine = new CommandLine(new ShowMpM());
               __execute_cmd(inputs, commandLine);
               break;
             }
