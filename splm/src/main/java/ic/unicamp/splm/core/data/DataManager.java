@@ -370,24 +370,11 @@ public class DataManager {
     __showFM(false);
   }
 
-  public void __showFM(boolean raw) {
-    Graph<Vertex, Edge> subgraph = reduceGraphToFMGraph();
-
-    List<Vertex> vertexList =
-        subgraph.vertexSet().stream()
-            .sorted(Comparator.comparingInt(subgraph::outDegreeOf))
-            .collect(Collectors.toList());
-    vertexList.forEach(
-        vertex -> {
-          Set<Edge> outgoing_Edges = subgraph.outgoingEdgesOf(vertex);
-          StringBuilder stringBuilder = new StringBuilder();
-          stringBuilder.append(String.format("%S ->", vertex.getId()));
-          for (Edge item : outgoing_Edges) {
-            stringBuilder.append(" ").append(subgraph.getEdgeTarget(item).getId()).append(",");
-          }
-          SplMgrLogger.info(stringBuilder.toString(), false);
-        });
+  public void __showFM(boolean showData) {
+    Graph<Vertex, Edge> fm_subgraph = reduceGraphToBrGraph();
+    __showSubGraph(fm_subgraph, showData, HashObjectType.FEATURE);
   }
+
 
   @NotNull
   private Graph<Vertex, Edge> reduceGraphToFMGraph() {
@@ -395,12 +382,28 @@ public class DataManager {
         graph.vertexSet().stream()
             .filter(vertex -> vertex.getType().equals(VertexType.FEATURE))
             .collect(Collectors.toSet());
-    // new AsSubgraph<>(graph, vertices, edges); function is not working well
+
     Graph<Vertex, Edge> fm_subgraph = new AsSubgraph<>(graph, vertices);
     Set<Edge> edges_to_remove =
         graph.edgeSet().stream()
             .filter(edge -> !edge.getType().equals(EdgeType.FEATURE))
             .collect(Collectors.toSet());
+    fm_subgraph.removeAllEdges(edges_to_remove);
+    return fm_subgraph;
+  }
+
+  @NotNull
+  private Graph<Vertex, Edge> reduceGraphToBrGraph() {
+    Set<Vertex> vertices =
+            graph.vertexSet().stream()
+                    .filter(vertex -> vertex.getType().equals(VertexType.BRANCH))
+                    .collect(Collectors.toSet());
+
+    Graph<Vertex, Edge> fm_subgraph = new AsSubgraph<>(graph, vertices);
+    Set<Edge> edges_to_remove =
+            graph.edgeSet().stream()
+                    .filter(edge -> !edge.getType().equals(EdgeType.BRANCH))
+                    .collect(Collectors.toSet());
     fm_subgraph.removeAllEdges(edges_to_remove);
     return fm_subgraph;
   }
@@ -477,4 +480,68 @@ public class DataManager {
     Graph<Vertex, Edge> fm_subgraph = reduceGraphToFMGraph();
     __genMapAndBrVertexes(fm_subgraph);
   }
+
+  public void showBrModel() {
+    Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
+    __showSubGraph(br_subgraph, false,  HashObjectType.BRANCH);
+  }
+  public void showRawBrModel() {
+    Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
+    __showSubGraph(br_subgraph, true, HashObjectType.BRANCH);
+  }
+
+  private void __showSubGraph(Graph<Vertex, Edge> br_subgraph, boolean showData, HashObjectType hashObjectType) {
+    List<Vertex> vertexList =
+            br_subgraph.vertexSet().stream()
+                    .sorted(Comparator.comparingInt(br_subgraph::outDegreeOf))
+                    .collect(Collectors.toList());
+    vertexList.forEach(
+            vertex -> {
+              Set<Edge> outgoing_Edges = br_subgraph.outgoingEdgesOf(vertex);
+              StringBuilder stringBuilder = new StringBuilder();
+              if(showData){
+                __showRawData(stringBuilder,vertex.getId(), hashObjectType);
+              }
+              stringBuilder.append(String.format("%S ->", vertex.getId()));
+              for (Edge item : outgoing_Edges) {
+                stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
+              }
+              SplMgrLogger.info(stringBuilder.toString(), false);
+            });
+  }
+
+  private void __showRawData(StringBuilder stringBuilder, String id, HashObjectType hashObjectType) {
+    HashValue hashValue = hashtable.get(id);
+    stringBuilder.append(String.format("%S:", id));
+    stringBuilder.append("\n");
+    switch (hashObjectType){
+      case FEATURE:{
+        Feature feature = (Feature) hashValue.getObject();
+        stringBuilder.append(String.format("Name %S", feature.getName()));
+        stringBuilder.append(String.format("Type %S:", feature.getType()));
+        stringBuilder.append(String.format("Mode %S:", feature.getMode()));
+        break;
+      }
+      case MAPPING:{
+        Mapping feature = (Mapping) hashValue.getObject();
+        stringBuilder.append(String.format("Name %S", feature.getName()));
+        //stringBuilder.append(String.format("Type %S:", feature.getType()));
+        break;
+        }
+      case PRODUCT:{
+        Product feature = (Product) hashValue.getObject();
+        stringBuilder.append(String.format("Name %S", feature.getName()));
+        break;
+      }
+      case BRANCH:{
+        Branch feature = (Branch) hashValue.getObject();
+        stringBuilder.append(String.format("Name %S", feature.getName()));
+        break;
+      }
+    }
+
+
+  }
+
+
 }
