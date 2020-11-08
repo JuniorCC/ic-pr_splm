@@ -10,7 +10,7 @@ public class ShowPrM implements Runnable {
 
   @Override
   public void run() {
-      SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
     splMgr.showPrM();
   }
 }

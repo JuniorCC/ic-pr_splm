@@ -11,16 +11,14 @@ import ic.unicamp.splm.cli.cmd.dir.RemoveDir;
 import ic.unicamp.splm.cli.cmd.git.Checkout;
 import ic.unicamp.splm.cli.cmd.git.Pack;
 import ic.unicamp.splm.cli.cmd.git.Status;
-import ic.unicamp.splm.cli.cmd.graph.br.*;
-import ic.unicamp.splm.cli.cmd.graph.pr.*;
+import ic.unicamp.splm.cli.cmd.graph.FulfillGraph;
+import ic.unicamp.splm.cli.cmd.graph.br.ShowBrM;
 import ic.unicamp.splm.cli.cmd.graph.fm.InitFM;
 import ic.unicamp.splm.cli.cmd.graph.fm.ShowFM;
-import ic.unicamp.splm.cli.cmd.graph.fm.constraint.AddConstraint;
-import ic.unicamp.splm.cli.cmd.graph.fm.constraint.EditConstraint;
-import ic.unicamp.splm.cli.cmd.graph.fm.constraint.ListConstraint;
-import ic.unicamp.splm.cli.cmd.graph.fm.constraint.RemoveConstraint;
-import ic.unicamp.splm.cli.cmd.graph.fm.feature.*;
-import ic.unicamp.splm.cli.cmd.graph.mp.*;
+import ic.unicamp.splm.cli.cmd.graph.fm.feature.AddFeature;
+import ic.unicamp.splm.cli.cmd.graph.mp.ShowMpM;
+import ic.unicamp.splm.cli.cmd.graph.pr.ShowPrM;
+import ic.unicamp.splm.cli.cmd.graph.pr.product.AddProduct;
 import ic.unicamp.splm.cli.cmd.spl.CheckConflict;
 import ic.unicamp.splm.cli.cmd.spl.GenerateBranches;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
@@ -35,7 +33,7 @@ import static ic.unicamp.splm.cli.util.CmdTag.*;
 import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
 
 @CommandLine.Command(
-    header = {},
+    header = {""},
     description = {"", "An SPL manager that internally use git", ""},
     subcommands = {
       // basic
@@ -56,53 +54,31 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
       Pack.class,
       Status.class,
 
-      // data -> br
+      // graph -> br
       ShowBrM.class,
-
-      // graph -> conf
-      AddProduct.class,
-      GenerateConfTable.class,
-      LoadConf.class,
-      RemoveProdConf.class,
-      SaveConf.class,
-      ShowPrM.class,
-
-      // graph -> fm -> constraint
-      AddConstraint.class,
-      EditConstraint.class,
-      ListConstraint.class,
-      RemoveConstraint.class,
 
       // graph -> fm -> feature
       AddFeature.class,
-      ChangeFeatureType.class,
-      MoveFeature.class,
-      RemoveFeature.class,
-      RenameFeature.class,
-
       // graph -> fm
       InitFM.class,
-      LoadFM.class,
-      SaveFM.class,
       ShowFM.class,
-      // ShowFMGraph.class,
 
       // graph -> map
-      GenerateMap.class,
-      LoadMap.class,
-      SaveMap.class,
       ShowMpM.class,
-      ShowMapGraph.class,
+
+      // graph -> pr -> product
+      AddProduct.class,
+      // graph -> pr
+      ShowPrM.class,
+
+      // graph
+      FulfillGraph.class,
 
       // spl
       CheckConflict.class,
       GenerateBranches.class,
-      GenerateProducts.class,
-      ListProducts.class,
     })
 public class Cmd implements Runnable {
-
-  // Logger logger = LoggerFactory.getLogger(XGitCommands.class);
 
   @Override
   public void run() {
@@ -123,14 +99,6 @@ public class Cmd implements Runnable {
     __print_end_scanning_files();
   }
 
-  /*  @CommandLine.Command(name = "prompt")
-  void prompt_command() {
-    //CommandLine commandLine = new CommandLine(new Cmd());
-    String asciiArt = FigletFont.convertOneLine("SMPL");
-    SplMgrLogger.info(asciiArt, false);
-    SplMgrLogger.message(INF_0__WELCOME_SPLM, false);
-    __run_splm_prompt();
-  }*/
   private void __run_splm_prompt() {
     boolean alive = true;
     Scanner sc = new Scanner(System.in);
@@ -213,7 +181,7 @@ public class Cmd implements Runnable {
               break;
             }
 
-            // data -> br
+            // graph -> br
           case CMD_SHOW_BRM:
             {
               CommandLine commandLine = new CommandLine(new ShowBrM());
@@ -221,118 +189,18 @@ public class Cmd implements Runnable {
               break;
             }
 
-            // graph -> conf
-          case CMD_ADD_PROD_CONF:
-            {
-              CommandLine commandLine = new CommandLine(new AddProduct());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_GENERATE_CONF_TABLE:
-            {
-              CommandLine commandLine = new CommandLine(new GenerateConfTable());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_LOAD_CONF:
-            {
-              CommandLine commandLine = new CommandLine(new LoadConf());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_REMOVE_PROD_CONF:
-            {
-              CommandLine commandLine = new CommandLine(new RemoveProdConf());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_SAVE_CONF:
-            {
-              CommandLine commandLine = new CommandLine(new SaveConf());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_SHOW_CONF:
-            {
-              CommandLine commandLine = new CommandLine(new ShowPrM());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-
-            // graph -> fm -> constraint
-          case CMD_ADD_CONSTRAINT:
-            {
-              CommandLine commandLine = new CommandLine(new AddConstraint());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_EDIT_CONSTRAINT:
-            {
-              CommandLine commandLine = new CommandLine(new EditConstraint());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_LIST_CONSTRAINT:
-            {
-              CommandLine commandLine = new CommandLine(new ListConstraint());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_REMOVE_CONSTRAINT:
-            {
-              CommandLine commandLine = new CommandLine(new RemoveConstraint());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-
             // graph -> fm -> feature
+
           case CMD_ADD_FEATURE:
             {
               CommandLine commandLine = new CommandLine(new AddFeature());
               __execute_cmd(inputs, commandLine);
               break;
             }
-          case CMD_CHANGE_FEATURE_TYPE:
-            {
-              CommandLine commandLine = new CommandLine(new ChangeFeatureType());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_MOVE_FEATURE:
-            {
-              CommandLine commandLine = new CommandLine(new MoveFeature());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_REMOVE_FEATURE:
-            {
-              CommandLine commandLine = new CommandLine(new RemoveFeature());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_RENAME_FEATURE:
-            {
-              CommandLine commandLine = new CommandLine(new RenameFeature());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-
             // graph -> fm
           case CMD_INIT_FM:
             {
               CommandLine commandLine = new CommandLine(new InitFM());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_LOAD_FM:
-            {
-              CommandLine commandLine = new CommandLine(new LoadFM());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_SAVE_FM:
-            {
-              CommandLine commandLine = new CommandLine(new SaveFM());
               __execute_cmd(inputs, commandLine);
               break;
             }
@@ -342,45 +210,35 @@ public class Cmd implements Runnable {
               __execute_cmd(inputs, commandLine);
               break;
             }
-            /*case CMD_SHOW_FM_GRAPH:
-            {
-              CommandLine commandLine = new CommandLine(new ShowFMGraph());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }*/
-
-            // graph -> map
-          case CMD_GENERATE_MAP_GRAPH:
-            {
-              CommandLine commandLine = new CommandLine(new GenerateMap());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_LOAD_MAP:
-            {
-              CommandLine commandLine = new CommandLine(new LoadMap());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_SAVE_MAP:
-            {
-              CommandLine commandLine = new CommandLine(new SaveMap());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_SHOW_MAP:
+            // graph -> mp
+          case CMD_SHOW_MPM:
             {
               CommandLine commandLine = new CommandLine(new ShowMpM());
               __execute_cmd(inputs, commandLine);
               break;
             }
-          case CMD_SHOW_MAP_GRAPH:
+
+            // graph -> pr -> product
+          case CMD_ADD_PROD:
             {
-              CommandLine commandLine = new CommandLine(new ShowMapGraph());
+              CommandLine commandLine = new CommandLine(new AddProduct());
               __execute_cmd(inputs, commandLine);
               break;
             }
-
+            // graph -> pr
+          case CMD_SHOW_PRM:
+            {
+              CommandLine commandLine = new CommandLine(new ShowPrM());
+              __execute_cmd(inputs, commandLine);
+              break;
+            }
+            // graph
+          case CMD_FULFILL_GRAPH:
+            {
+              CommandLine commandLine = new CommandLine(new FulfillGraph());
+              __execute_cmd(inputs, commandLine);
+              break;
+            }
             // spl
           case CMD_CHECK_CONFLICT:
             {
@@ -391,18 +249,6 @@ public class Cmd implements Runnable {
           case CMD_GENERATE_BRANCHES:
             {
               CommandLine commandLine = new CommandLine(new GenerateBranches());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_GENERATE_PRODUCTS:
-            {
-              CommandLine commandLine = new CommandLine(new GenerateProducts());
-              __execute_cmd(inputs, commandLine);
-              break;
-            }
-          case CMD_LIST_PRODUCTS:
-            {
-              CommandLine commandLine = new CommandLine(new ListProducts());
               __execute_cmd(inputs, commandLine);
               break;
             }

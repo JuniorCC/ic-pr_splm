@@ -125,14 +125,9 @@ public class SplMgr {
     dataManager.clearData();
   }
 
+  public void showBrM() {}
 
-  public void showBrM() {
-
-  }
-
-  public void showPrM() {
-
-  }
+  public void showPrM() {}
 
   public void fulfillGraph() {
     dataManager.fulfillGraph();

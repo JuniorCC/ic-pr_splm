@@ -1,4 +1,4 @@
-package ic.unicamp.splm.cli.cmd.graph.pr;
+package ic.unicamp.splm.cli.cmd.graph.pr.product;
 
 import ic.unicamp.splm.core.SplMgr;
 import ic.unicamp.splm.core.SplMgrBuilder;
@@ -10,6 +10,7 @@ public class AddProduct implements Runnable {
 
   @CommandLine.Parameters(paramLabel = "name", description = "product name")
   String name;
+
   @Override
   public void run() {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();

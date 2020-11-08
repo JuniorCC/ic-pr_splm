@@ -8,7 +8,6 @@ import picocli.CommandLine;
 public class ShowMpM implements Runnable {
   public static final String command_name = "show-mpm";
 
-
   @Override
   public void run() {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
