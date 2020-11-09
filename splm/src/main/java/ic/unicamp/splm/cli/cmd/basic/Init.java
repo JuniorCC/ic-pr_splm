@@ -40,16 +40,15 @@ public class Init implements Runnable {
         } else {
           SplMgrLogger.info(INFO_3__SPLM_DIR_DETECTED, true);
           SplMgrLogger.warn(WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS, true);
-          if(!splMgr.exists_git_dir()){
+          if (!splMgr.exists_git_dir()) {
             splMgr.create_soft_git_dir();
-          }else{
+          } else {
             SplMgrLogger.info(INFO_3__GIT_DIR_DETECTED, true);
           }
         }
       } else {
         splMgr.create_splm_dir();
         splMgr.create_soft_git_dir();
-
       }
     }
     splMgr.initGit();

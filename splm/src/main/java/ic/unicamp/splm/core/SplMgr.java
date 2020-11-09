@@ -144,6 +144,6 @@ public class SplMgr {
   }
 
   public boolean exists_git_dir() {
-      return GitDir.exists_git_dir();
+    return GitDir.exists_git_dir();
   }
 }

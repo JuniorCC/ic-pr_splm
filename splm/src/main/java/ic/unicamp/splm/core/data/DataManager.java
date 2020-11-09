@@ -31,6 +31,7 @@ import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.nio.dot.DOTImporter;
 import org.jgrapht.traverse.BreadthFirstIterator;
+import org.jgrapht.traverse.DepthFirstIterator;
 
 import java.io.File;
 import java.io.FileReader;
@@ -449,7 +450,6 @@ public class DataManager {
     String id_map = IDGenerator.generateMappingID(name);
     String id_branch = IDGenerator.generateBranchID(name);
 
-
     Vertex map_vertex = __createMappingVertex(id_map, name);
     Vertex br_vertex = __createBranchVertex(id_branch, id_branch);
 
@@ -461,7 +461,7 @@ public class DataManager {
       Vertex vbr_vertex = __createBranchVertex(id_vBranch, id_vBranch);
       __addMappingEdge(map_vertex, vbr_vertex);
 
-      __addBranchEdge(br_vertex, vbr_vertex);//adding edge between branches
+      __addBranchEdge(br_vertex, vbr_vertex); // adding edge between branches
     }
 
     if (parentVertex != null) {
@@ -559,13 +559,25 @@ public class DataManager {
   }
 
   private void __generateGitBranches(Graph<Vertex, Edge> br_subgraph, GitMgr gitMgr) {
-    BreadthFirstIterator<Vertex, Edge> bfs = new BreadthFirstIterator<>(br_subgraph);
-    while (bfs.hasNext()) {
-      Vertex vertex = bfs.next();
-      Vertex parentVertex = bfs.getParent(vertex);
+    DepthFirstIterator<Vertex, Edge> dfs = new DepthFirstIterator<>(br_subgraph); //bfs not work //dfs?
+    while (dfs.hasNext()) {
+      Vertex vertex = dfs.next();
+      Vertex parentVertex = null;
+      for (Edge item : br_subgraph.incomingEdgesOf(vertex)) {
+        if(item.getType().equals(EdgeType.BRANCH)){
+          parentVertex = br_subgraph.getEdgeSource(item);
+          break;
+        }
+      }
+      System.out.println(vertex.getId());
+      if(parentVertex!=null){
+        System.out.println(parentVertex.getId());
+      }
+      System.out.println(" -- ");
       Branch parentBranch = __retrieveBranch(parentVertex);
       Branch branch = __retrieveBranch(vertex);
       __createGitBranch(parentBranch, branch, gitMgr);
+
     }
   }
 

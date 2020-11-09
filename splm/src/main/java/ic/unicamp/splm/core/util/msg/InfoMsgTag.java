@@ -36,4 +36,5 @@ public interface InfoMsgTag {
 
   String INFO_3__LOADED_HASHMAP = "Loaded hashmap file";
   String INFO_3__LOADED_GRAPH = "Loaded graph file";
+  String INF_0__MASTER_BRANCH_CREATED = "'master' git branch created";
 }

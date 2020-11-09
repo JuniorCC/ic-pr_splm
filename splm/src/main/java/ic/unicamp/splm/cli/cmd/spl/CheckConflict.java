@@ -7,7 +7,5 @@ public class CheckConflict implements Runnable {
   public static final String command_name = "check-conflict";
 
   @Override
-  public void run() {
-
-  }
+  public void run() {}
 }

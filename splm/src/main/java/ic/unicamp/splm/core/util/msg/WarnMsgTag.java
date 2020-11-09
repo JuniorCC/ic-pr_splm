@@ -35,4 +35,5 @@ public interface WarnMsgTag {
       "There is already a GIT Branch with the '%s' name";
   String WAR_0__PARENT_GIT_BRANCH_DOES_NOT_EXITS =
       "Parent GIT Branch with the '%s' name does not exits";
+  String WAR_0__GIT_IGNORE_HELLO_SPLM_WAS_NOT_CREATED = "gitignore.hello.splm file was not created";
 }
