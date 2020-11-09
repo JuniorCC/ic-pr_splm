@@ -142,4 +142,8 @@ public class SplMgr {
   public void genGitBranches() {
     dataManager.genGitBranches(gitMgr);
   }
+
+  public boolean exists_git_dir() {
+      return GitDir.exists_git_dir();
+  }
 }

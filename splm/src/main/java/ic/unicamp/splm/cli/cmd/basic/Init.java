@@ -5,6 +5,7 @@ import ic.unicamp.splm.core.SplMgrBuilder;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import picocli.CommandLine;
 
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INFO_3__GIT_DIR_DETECTED;
 import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INFO_3__SPLM_DIR_DETECTED;
 import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS;
 
@@ -31,22 +32,26 @@ public class Init implements Runnable {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
     if (ff) {
       splMgr.create_hard_all_dirs(); // hard means 'and remove'
-      splMgr.initGit();
     } else {
       if (splMgr.exists_splm_dir()) {
         if (f) {
           splMgr.create_hard_splm_dir();
           splMgr.create_soft_git_dir(); // soft means it not exits
-          splMgr.initGit();
         } else {
           SplMgrLogger.info(INFO_3__SPLM_DIR_DETECTED, true);
           SplMgrLogger.warn(WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS, true);
+          if(!splMgr.exists_git_dir()){
+            splMgr.create_soft_git_dir();
+          }else{
+            SplMgrLogger.info(INFO_3__GIT_DIR_DETECTED, true);
+          }
         }
       } else {
         splMgr.create_splm_dir();
         splMgr.create_soft_git_dir();
-        splMgr.initGit();
+
       }
     }
+    splMgr.initGit();
   }
 }

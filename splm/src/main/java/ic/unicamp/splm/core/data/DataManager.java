@@ -372,7 +372,7 @@ public class DataManager {
   }
 
   public void __showFM(boolean showData) {
-    Graph<Vertex, Edge> fm_subgraph = reduceGraphToBrGraph();
+    Graph<Vertex, Edge> fm_subgraph = reduceGraphToFMGraph();
     __showSubGraph(fm_subgraph, showData, HashObjectType.FEATURE);
   }
 
@@ -419,6 +419,7 @@ public class DataManager {
     while (bfs.hasNext()) {
       Vertex vertex = bfs.next();
       Vertex parentVertex = bfs.getParent(vertex);
+
       Feature parentFeature = __retrieveFeature(parentVertex);
       Feature feature = __retrieveFeature(vertex);
       __createMapAndBrVertexes(parentVertex, parentFeature, vertex, feature);
@@ -447,19 +448,20 @@ public class DataManager {
 
     String id_map = IDGenerator.generateMappingID(name);
     String id_branch = IDGenerator.generateBranchID(name);
-    String id_vBranch = IDGenerator.generateVBranchID(name);
+
 
     Vertex map_vertex = __createMappingVertex(id_map, name);
     Vertex br_vertex = __createBranchVertex(id_branch, id_branch);
 
-    __addMappingEdge(vertex, map_vertex);
+    __addMappingEdge(map_vertex, vertex);
     __addMappingEdge(map_vertex, br_vertex);
 
     if (feature.isOrParent()) {
+      String id_vBranch = IDGenerator.generateVBranchID(name);
       Vertex vbr_vertex = __createBranchVertex(id_vBranch, id_vBranch);
       __addMappingEdge(map_vertex, vbr_vertex);
 
-      __addBranchEdge(br_vertex, vbr_vertex);
+      __addBranchEdge(br_vertex, vbr_vertex);//adding edge between branches
     }
 
     if (parentVertex != null) {
@@ -524,25 +526,28 @@ public class DataManager {
           stringBuilder.append(String.format("Name %S", feature.getName()));
           stringBuilder.append(String.format("Type %S:", feature.getType()));
           stringBuilder.append(String.format("Mode %S:", feature.getMode()));
+          stringBuilder.append("\n");
           break;
         }
       case MAPPING:
         {
           Mapping feature = (Mapping) hashValue.getObject();
           stringBuilder.append(String.format("Name %S", feature.getName()));
-          // stringBuilder.append(String.format("Type %S:", feature.getType()));
+          stringBuilder.append("\n");
           break;
         }
       case PRODUCT:
         {
           Product feature = (Product) hashValue.getObject();
           stringBuilder.append(String.format("Name %S", feature.getName()));
+          stringBuilder.append("\n");
           break;
         }
       case BRANCH:
         {
           Branch feature = (Branch) hashValue.getObject();
           stringBuilder.append(String.format("Name %S", feature.getName()));
+          stringBuilder.append("\n");
           break;
         }
     }
