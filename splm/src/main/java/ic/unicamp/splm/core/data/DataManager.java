@@ -113,6 +113,11 @@ public class DataManager {
     __addEdge(base_vertex, new_vertex, EdgeType.FEATURE);
   }
 
+  private void __addProductEdge(Vertex base_vertex, Vertex new_vertex) {
+
+    __addEdge(base_vertex, new_vertex, EdgeType.PRODUCT);
+  }
+
   private void __addBranchEdge(Vertex base_vertex, Vertex new_vertex) {
     __addEdge(base_vertex, new_vertex, EdgeType.BRANCH);
   }
@@ -559,25 +564,25 @@ public class DataManager {
   }
 
   private void __generateGitBranches(Graph<Vertex, Edge> br_subgraph, GitMgr gitMgr) {
-    DepthFirstIterator<Vertex, Edge> dfs = new DepthFirstIterator<>(br_subgraph); //bfs not work //dfs?
+    DepthFirstIterator<Vertex, Edge> dfs =
+        new DepthFirstIterator<>(br_subgraph); // bfs not work //dfs?
     while (dfs.hasNext()) {
       Vertex vertex = dfs.next();
       Vertex parentVertex = null;
       for (Edge item : br_subgraph.incomingEdgesOf(vertex)) {
-        if(item.getType().equals(EdgeType.BRANCH)){
+        if (item.getType().equals(EdgeType.BRANCH)) {
           parentVertex = br_subgraph.getEdgeSource(item);
           break;
         }
       }
       System.out.println(vertex.getId());
-      if(parentVertex!=null){
+      if (parentVertex != null) {
         System.out.println(parentVertex.getId());
       }
       System.out.println(" -- ");
       Branch parentBranch = __retrieveBranch(parentVertex);
       Branch branch = __retrieveBranch(vertex);
       __createGitBranch(parentBranch, branch, gitMgr);
-
     }
   }
 
@@ -603,5 +608,32 @@ public class DataManager {
       }
     }
     return null;
+  }
+
+  public void showPrM() {}
+
+  public boolean verifyFeature(String feature) {
+    String id_feature = IDGenerator.generateFeatureID(feature);
+    return hashtable.containsKey(id_feature);
+  }
+
+  public void addProduct(String name, List<String> features) {
+    String id_product = IDGenerator.generateProductID(name);
+    if (hashtable.containsKey(id_product)) {
+      SplMgrLogger.warn(WAR_0__PRODUCT_NAME_ALREADY_EXITS, true);
+    } else {
+      Vertex product = __createProductVertex(id_product, name);
+      for (String feature : features) {
+        String feature_id = IDGenerator.generateFeatureID(feature);
+        Vertex featureVertex = __retrieveVertexById(feature_id);
+        if (featureVertex != null) {
+          __addProductEdge(product, featureVertex);
+          SplMgrLogger.info(
+              String.format(INFO_0__ADDED_PRODUCT_RELATION_TO_FEATURE, feature_id), true);
+        } else {
+          SplMgrLogger.warn(String.format(WAR_0__FEATURE_NOT_FOUND, feature_id), true);
+        }
+      }
+    }
   }
 }

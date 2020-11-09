@@ -10,6 +10,8 @@ import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import ic.unicamp.splm.core.vc.git.GitMgr;
 import ic.unicamp.splm.core.vc.git.GitMgrBuilder;
 
+import java.util.List;
+
 import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
 import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_3__WE_COULD_NOT_CREATE_GIT_DIR_BECAUSE_ALREADY_EXITS;
 
@@ -133,7 +135,9 @@ public class SplMgr {
     dataManager.showRawBrModel();
   }
 
-  public void showPrM() {}
+  public void showPrM() {
+    dataManager.showPrM();
+  }
 
   public void fulfillGraph() {
     dataManager.fulfillGraph();
@@ -145,5 +149,14 @@ public class SplMgr {
 
   public boolean exists_git_dir() {
     return GitDir.exists_git_dir();
+  }
+
+  public void addProduct(String name, List<String> features) {
+    dataManager.addProduct(name, features);
+    SplMgrLogger.info(INFO_0__PRODUCT_ADDED,true);
+  }
+
+  public boolean verifyFeature(String feature) {
+    return dataManager.verifyFeature(feature);
   }
 }
