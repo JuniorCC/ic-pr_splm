@@ -30,4 +30,9 @@ public interface WarnMsgTag {
 
   String WARN_4__GIT_DIR_NOT_CREATED = "git directory not created";
   String WARN_4__GIT_DIR_NOT_REMOVED = "git directory not removed";
+
+  String WAR_0__BRANCH_NAME_IS_BEEING_USED_IN_THE_LOCAL_GIT =
+      "There is already a GIT Branch with the '%s' name";
+  String WAR_0__PARENT_GIT_BRANCH_DOES_NOT_EXITS =
+      "Parent GIT Branch with the '%s' name does not exits";
 }

@@ -128,18 +128,18 @@ public class SplMgr {
   public void showBrM() {
     dataManager.showBrModel();
   }
+
   public void showRawBrM() {
     dataManager.showRawBrModel();
   }
-  public void showPrM() {
 
-  }
-
-
+  public void showPrM() {}
 
   public void fulfillGraph() {
     dataManager.fulfillGraph();
   }
 
-
+  public void genGitBranches() {
+    dataManager.genGitBranches(gitMgr);
+  }
 }

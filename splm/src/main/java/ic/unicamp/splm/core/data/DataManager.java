@@ -20,6 +20,7 @@ import ic.unicamp.splm.core.util.dir.GraphDir;
 import ic.unicamp.splm.core.util.dir.HashMapDir;
 import ic.unicamp.splm.core.util.id.IDGenerator;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
+import ic.unicamp.splm.core.vc.git.GitMgr;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jgrapht.Graph;
@@ -375,7 +376,6 @@ public class DataManager {
     __showSubGraph(fm_subgraph, showData, HashObjectType.FEATURE);
   }
 
-
   @NotNull
   private Graph<Vertex, Edge> reduceGraphToFMGraph() {
     Set<Vertex> vertices =
@@ -395,15 +395,15 @@ public class DataManager {
   @NotNull
   private Graph<Vertex, Edge> reduceGraphToBrGraph() {
     Set<Vertex> vertices =
-            graph.vertexSet().stream()
-                    .filter(vertex -> vertex.getType().equals(VertexType.BRANCH))
-                    .collect(Collectors.toSet());
+        graph.vertexSet().stream()
+            .filter(vertex -> vertex.getType().equals(VertexType.BRANCH))
+            .collect(Collectors.toSet());
 
     Graph<Vertex, Edge> fm_subgraph = new AsSubgraph<>(graph, vertices);
     Set<Edge> edges_to_remove =
-            graph.edgeSet().stream()
-                    .filter(edge -> !edge.getType().equals(EdgeType.BRANCH))
-                    .collect(Collectors.toSet());
+        graph.edgeSet().stream()
+            .filter(edge -> !edge.getType().equals(EdgeType.BRANCH))
+            .collect(Collectors.toSet());
     fm_subgraph.removeAllEdges(edges_to_remove);
     return fm_subgraph;
   }
@@ -483,65 +483,108 @@ public class DataManager {
 
   public void showBrModel() {
     Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
-    __showSubGraph(br_subgraph, false,  HashObjectType.BRANCH);
+    __showSubGraph(br_subgraph, false, HashObjectType.BRANCH);
   }
+
   public void showRawBrModel() {
     Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
     __showSubGraph(br_subgraph, true, HashObjectType.BRANCH);
   }
 
-  private void __showSubGraph(Graph<Vertex, Edge> br_subgraph, boolean showData, HashObjectType hashObjectType) {
+  private void __showSubGraph(
+      Graph<Vertex, Edge> br_subgraph, boolean showData, HashObjectType hashObjectType) {
     List<Vertex> vertexList =
-            br_subgraph.vertexSet().stream()
-                    .sorted(Comparator.comparingInt(br_subgraph::outDegreeOf))
-                    .collect(Collectors.toList());
+        br_subgraph.vertexSet().stream()
+            .sorted(Comparator.comparingInt(br_subgraph::outDegreeOf))
+            .collect(Collectors.toList());
     vertexList.forEach(
-            vertex -> {
-              Set<Edge> outgoing_Edges = br_subgraph.outgoingEdgesOf(vertex);
-              StringBuilder stringBuilder = new StringBuilder();
-              if(showData){
-                __showRawData(stringBuilder,vertex.getId(), hashObjectType);
-              }
-              stringBuilder.append(String.format("%S ->", vertex.getId()));
-              for (Edge item : outgoing_Edges) {
-                stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
-              }
-              SplMgrLogger.info(stringBuilder.toString(), false);
-            });
+        vertex -> {
+          Set<Edge> outgoing_Edges = br_subgraph.outgoingEdgesOf(vertex);
+          StringBuilder stringBuilder = new StringBuilder();
+          if (showData) {
+            __showRawData(stringBuilder, vertex.getId(), hashObjectType);
+          }
+          stringBuilder.append(String.format("%S ->", vertex.getId()));
+          for (Edge item : outgoing_Edges) {
+            stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
+          }
+          SplMgrLogger.info(stringBuilder.toString(), false);
+        });
   }
 
-  private void __showRawData(StringBuilder stringBuilder, String id, HashObjectType hashObjectType) {
+  private void __showRawData(
+      StringBuilder stringBuilder, String id, HashObjectType hashObjectType) {
     HashValue hashValue = hashtable.get(id);
     stringBuilder.append(String.format("%S:", id));
     stringBuilder.append("\n");
-    switch (hashObjectType){
-      case FEATURE:{
-        Feature feature = (Feature) hashValue.getObject();
-        stringBuilder.append(String.format("Name %S", feature.getName()));
-        stringBuilder.append(String.format("Type %S:", feature.getType()));
-        stringBuilder.append(String.format("Mode %S:", feature.getMode()));
-        break;
-      }
-      case MAPPING:{
-        Mapping feature = (Mapping) hashValue.getObject();
-        stringBuilder.append(String.format("Name %S", feature.getName()));
-        //stringBuilder.append(String.format("Type %S:", feature.getType()));
-        break;
+    switch (hashObjectType) {
+      case FEATURE:
+        {
+          Feature feature = (Feature) hashValue.getObject();
+          stringBuilder.append(String.format("Name %S", feature.getName()));
+          stringBuilder.append(String.format("Type %S:", feature.getType()));
+          stringBuilder.append(String.format("Mode %S:", feature.getMode()));
+          break;
         }
-      case PRODUCT:{
-        Product feature = (Product) hashValue.getObject();
-        stringBuilder.append(String.format("Name %S", feature.getName()));
-        break;
-      }
-      case BRANCH:{
-        Branch feature = (Branch) hashValue.getObject();
-        stringBuilder.append(String.format("Name %S", feature.getName()));
-        break;
-      }
+      case MAPPING:
+        {
+          Mapping feature = (Mapping) hashValue.getObject();
+          stringBuilder.append(String.format("Name %S", feature.getName()));
+          // stringBuilder.append(String.format("Type %S:", feature.getType()));
+          break;
+        }
+      case PRODUCT:
+        {
+          Product feature = (Product) hashValue.getObject();
+          stringBuilder.append(String.format("Name %S", feature.getName()));
+          break;
+        }
+      case BRANCH:
+        {
+          Branch feature = (Branch) hashValue.getObject();
+          stringBuilder.append(String.format("Name %S", feature.getName()));
+          break;
+        }
     }
-
-
   }
 
+  public void genGitBranches(GitMgr gitMgr) {
+    Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
+    __generateGitBranches(br_subgraph, gitMgr);
+  }
 
+  private void __generateGitBranches(Graph<Vertex, Edge> br_subgraph, GitMgr gitMgr) {
+    BreadthFirstIterator<Vertex, Edge> bfs = new BreadthFirstIterator<>(br_subgraph);
+    while (bfs.hasNext()) {
+      Vertex vertex = bfs.next();
+      Vertex parentVertex = bfs.getParent(vertex);
+      Branch parentBranch = __retrieveBranch(parentVertex);
+      Branch branch = __retrieveBranch(vertex);
+      __createGitBranch(parentBranch, branch, gitMgr);
+    }
+  }
+
+  private void __createGitBranch(Branch parentBranch, Branch branch, GitMgr gitMgr) {
+    if (parentBranch == null) {
+      gitMgr.createBaseBranch(branch.getName());
+    } else {
+      gitMgr.createBranch(parentBranch.getName(), branch.getName());
+    }
+  }
+
+  private Branch __retrieveBranch(Vertex vertex) {
+    if (vertex != null) {
+      if (vertex.getType() == VertexType.BRANCH) {
+        HashValue hashValue = hashtable.get(vertex.getId());
+        if (hashValue.getType() == HashObjectType.BRANCH) {
+          return (Branch) hashValue.getObject();
+        } else {
+          SplMgrLogger.error(ERR_1__DATA_INCONSISTENCY_BETWEEN_HASHMAP_AND_GRAPH, true);
+        }
+      } else {
+        SplMgrLogger.warn(WARN_1__SUBGRAPH_MALFORMED, true);
+      }
+    }
+    return null;
+  }
 }
