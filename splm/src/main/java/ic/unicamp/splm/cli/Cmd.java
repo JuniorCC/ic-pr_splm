@@ -36,6 +36,7 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
     header = {""},
     description = {"", "An SPL manager that internally use git", ""},
     subcommands = {
+
       // basic
       Exit.class,
       Init.class, // dir
@@ -59,6 +60,7 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
 
       // graph -> fm -> feature
       AddFeature.class,
+
       // graph -> fm
       InitFM.class,
       ShowFM.class,
@@ -68,6 +70,7 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
 
       // graph -> pr -> product
       AddProduct.class,
+
       // graph -> pr
       ShowPrM.class,
 

@@ -29,19 +29,19 @@ public class SplMgr {
     dataManager.addFeature(parent, name, featureType, featureMode);
   }
 
-  public void addOptionalFeature(String parent, String name, FeatureMode featureMode) {
+  public void add_optional_feature(String parent, String name, FeatureMode featureMode) {
     __add_feature(parent, name, FeatureType.OPTIONAL, featureMode);
   }
 
-  public void addMandatoryFeature(String parent, String name, FeatureMode featureMode) {
+  public void add_mandatory_feature(String parent, String name, FeatureMode featureMode) {
     __add_feature(parent, name, FeatureType.MANDATORY, featureMode);
   }
 
-  public void addOrFeature(String parent, String name, FeatureMode featureMode) {
+  public void add_or_feature(String parent, String name, FeatureMode featureMode) {
     __add_feature(parent, name, FeatureType.OR, featureMode);
   }
 
-  public void addAlternativeFeature(String parent, String name, FeatureMode featureMode) {
+  public void add_alternative_feature(String parent, String name, FeatureMode featureMode) {
     __add_feature(parent, name, FeatureType.ALTERNATIVE, featureMode);
   }
 
@@ -153,7 +153,7 @@ public class SplMgr {
 
   public void addProduct(String name, List<String> features) {
     dataManager.addProduct(name, features);
-    SplMgrLogger.info(INFO_0__PRODUCT_ADDED,true);
+    SplMgrLogger.info(INFO_0__PRODUCT_ADDED, true);
   }
 
   public boolean verifyFeature(String feature) {

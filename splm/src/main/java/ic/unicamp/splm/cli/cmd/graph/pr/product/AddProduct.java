@@ -25,7 +25,6 @@ public class AddProduct implements Runnable {
       description = "one ore more files to archive")
   String[] features;
 
-
   @Override
   public void run() {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
@@ -33,16 +32,15 @@ public class AddProduct implements Runnable {
     for (String feature : features) {
       if (splMgr.verifyFeature(feature)) {
         verified_features.add(feature);
-        SplMgrLogger.info(String.format(INFO_0__FEATURE_FOUND, feature) , true);
-      }else{
-        SplMgrLogger.warn(String.format(WAR_0__FEATURE_NOT_FOUND, feature) , true);
+        SplMgrLogger.info(String.format(INFO_0__FEATURE_FOUND, feature), true);
+      } else {
+        SplMgrLogger.warn(String.format(WAR_0__FEATURE_NOT_FOUND, feature), true);
       }
     }
-    if(!verified_features.isEmpty()){
-        splMgr.addProduct(name, verified_features);
-    }else{
-      SplMgrLogger.warn(WAR_0__THERE_IS_NOT_SELECTED_FEATURE_TO_RELATE_WITH_THE_PRODUCT , true);
+    if (!verified_features.isEmpty()) {
+      splMgr.addProduct(name, verified_features);
+    } else {
+      SplMgrLogger.warn(WAR_0__THERE_IS_NOT_SELECTED_FEATURE_TO_RELATE_WITH_THE_PRODUCT, true);
     }
-
   }
 }

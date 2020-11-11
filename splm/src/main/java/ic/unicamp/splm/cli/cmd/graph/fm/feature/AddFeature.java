@@ -39,22 +39,22 @@ public class AddFeature implements Runnable {
       featureMode = FeatureMode.ABSTRACT;
     }
     if (optional) {
-      splMgr.addOptionalFeature(parent, name, featureMode);
+      splMgr.add_optional_feature(parent, name, featureMode);
       return;
     }
     if (mandatory) {
-      splMgr.addMandatoryFeature(parent, name, featureMode);
+      splMgr.add_mandatory_feature(parent, name, featureMode);
       return;
     }
     if (or) {
-      splMgr.addOrFeature(parent, name, featureMode);
+      splMgr.add_or_feature(parent, name, featureMode);
       return;
     }
     if (alternative) {
-      splMgr.addAlternativeFeature(parent, name, featureMode);
+      splMgr.add_alternative_feature(parent, name, featureMode);
       return;
     }
     // default
-    splMgr.addMandatoryFeature(parent, name, featureMode);
+    splMgr.add_mandatory_feature(parent, name, featureMode);
   }
 }
