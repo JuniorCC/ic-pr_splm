@@ -61,14 +61,14 @@ public class DataManager {
 
   public void addRootFeature(String name, FeatureType featureType, FeatureMode featureMode) {
 
-    String id_root_feature = IDGenerator.generateFeatureID(name);
+    String root_feature_id = IDGenerator.generateFeatureID(name);
 
-    if (hashtable.containsKey(id_root_feature)) {
+    if (hashtable.containsKey(root_feature_id)) {
       String msg = String.format(WARN_0__FEATURE_ROOT_ALREADY_EXITS, name);
       SplMgrLogger.warn(msg, true);
       return;
     }
-    __createFeatureVertex(id_root_feature, name, featureType, featureMode);
+    __createFeatureVertex(root_feature_id, name, featureType, featureMode);
     String msg = String.format(INFO_3__ADDED_ROOT_FEATURE, name);
     SplMgrLogger.info(msg, true);
   }
@@ -76,26 +76,29 @@ public class DataManager {
   public void addFeature(
       String base, String name, FeatureType featureType, FeatureMode featureMode) {
 
-    String id_base = IDGenerator.generateFeatureID(base);
-    String id = IDGenerator.generateFeatureID(name);
-    if (!hashtable.containsKey(id_base)) {
+    String base_feature_id = IDGenerator.generateFeatureID(base);
+    String feature_id = IDGenerator.generateFeatureID(name);
+
+    if (!hashtable.containsKey(base_feature_id)) {
       String msg = String.format(WARN_1__FEATURE_PARENT_DOES_NOT_EXITS, base);
       SplMgrLogger.warn(msg, true);
       return;
     }
-    if (hashtable.containsKey(id)) {
+    if (hashtable.containsKey(feature_id)) {
       String msg = String.format(WARN_2__FEATURE_ALREADY_EXITS, name);
       SplMgrLogger.warn(msg, true);
       return;
     }
 
-    Vertex new_vertex = __createFeatureVertex(id, name, featureType, featureMode);
-    Vertex base_vertex = __retrieveVertexById(id_base);
-    __addFeatureEdge(base_vertex, new_vertex);
+    Vertex new_vertex = __createFeatureVertex(feature_id, name, featureType, featureMode);
+    Vertex base_vertex = __retrieveVertexById(base_feature_id);
+    if(base_vertex != null){
+      __addFeatureEdge(base_vertex, new_vertex);
+    }
 
     // or property
     if (featureType.equals(FeatureType.OR)) {
-      Feature parent = (Feature) hashtable.get(id_base).getObject();
+      Feature parent = (Feature) hashtable.get(base_feature_id).getObject();
       parent.setOrParent(true);
     }
 
@@ -311,15 +314,15 @@ public class DataManager {
   }
 
   private Vertex __createFeatureVertex(
-      String id, String name, FeatureType featureType, FeatureMode featureMode) {
+      String feature_id, String name, FeatureType featureType, FeatureMode featureMode) {
     Feature feature =
         Feature.builder().mode(featureMode).type(featureType).name(name).orParent(false).build();
     HashValue hashValue = HashValue.builder().type(HashObjectType.FEATURE).object(feature).build();
-    Vertex new_vertex = new Vertex();
-    new_vertex.setId(id);
-    new_vertex.setType(VertexType.FEATURE);
+    hashtable.put(feature_id, hashValue);
 
-    hashtable.put(id, hashValue);
+    Vertex new_vertex = new Vertex();
+    new_vertex.setId(feature_id);
+    new_vertex.setType(VertexType.FEATURE);
     graph.addVertex(new_vertex);
     return new_vertex;
   }
@@ -361,7 +364,7 @@ public class DataManager {
   }
 
   private Vertex __retrieveVertexById(String id) {
-    for (Vertex node : this.graph.vertexSet()) {
+    for (Vertex node : graph.vertexSet()) {
       if (node.getId().equals(id)) {
         return node;
       }
@@ -500,7 +503,42 @@ public class DataManager {
 
   private void __showSubGraph(
       Graph<Vertex, Edge> br_subgraph, boolean showData, HashObjectType hashObjectType) {
-    List<Vertex> vertexList =
+
+/*    BreadthFirstIterator<Vertex, Edge> bfs1 = new BreadthFirstIterator<>(graph);
+    while (bfs1.hasNext()) {
+      Vertex vertex = bfs1.next();
+      //Vertex parentVertex = bfs.getParent(vertex);
+      Set<Edge> outgoing_Edges = br_subgraph.outgoingEdgesOf(vertex);
+      StringBuilder stringBuilder = new StringBuilder();
+      if (showData) {
+        __showRawData(stringBuilder, vertex.getId(), hashObjectType);
+      }
+      stringBuilder.append(String.format("%S ->", vertex.getId()));
+      for (Edge item : outgoing_Edges) {
+        stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
+      }
+      SplMgrLogger.info(stringBuilder.toString(), false);
+
+    }*/
+
+    BreadthFirstIterator<Vertex, Edge> bfs = new BreadthFirstIterator<>(br_subgraph);
+    while (bfs.hasNext()) {
+      Vertex vertex = bfs.next();
+      //Vertex parentVertex = bfs.getParent(vertex);
+      Set<Edge> outgoing_Edges = br_subgraph.outgoingEdgesOf(vertex);
+      StringBuilder stringBuilder = new StringBuilder();
+      if (showData) {
+        __showRawData(stringBuilder, vertex.getId(), hashObjectType);
+      }
+      stringBuilder.append(String.format("%S ->", vertex.getId()));
+      for (Edge item : outgoing_Edges) {
+        stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
+      }
+      SplMgrLogger.info(stringBuilder.toString(), false);
+
+    }
+
+  /*  List<Vertex> vertexList =
         br_subgraph.vertexSet().stream()
             .sorted(Comparator.comparingInt(br_subgraph::outDegreeOf))
             .collect(Collectors.toList());
@@ -516,7 +554,7 @@ public class DataManager {
             stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
           }
           SplMgrLogger.info(stringBuilder.toString(), false);
-        });
+        });*/
   }
 
   private void __showRawData(
@@ -565,7 +603,7 @@ public class DataManager {
 
   private void __generateGitBranches(Graph<Vertex, Edge> br_subgraph, GitMgr gitMgr) {
     DepthFirstIterator<Vertex, Edge> dfs =
-        new DepthFirstIterator<>(br_subgraph); // bfs not work //dfs?
+        new DepthFirstIterator<>(br_subgraph); // Breadth First Iterator not work //dfs?
     while (dfs.hasNext()) {
       Vertex vertex = dfs.next();
       Vertex parentVertex = null;
