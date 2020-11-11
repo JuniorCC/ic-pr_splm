@@ -24,37 +24,37 @@ public class SplMgr {
     gitMgr = GitMgrBuilder.getSingletonInstance();
   }
 
-  private void __add_feature(
+  private void __addFeature(
       String parent, String name, FeatureType featureType, FeatureMode featureMode) {
     dataManager.addFeature(parent, name, featureType, featureMode);
   }
 
-  public void add_optional_feature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(parent, name, FeatureType.OPTIONAL, featureMode);
+  public void addOptionalFeature(String parent, String name, FeatureMode featureMode) {
+    __addFeature(parent, name, FeatureType.OPTIONAL, featureMode);
   }
 
-  public void add_mandatory_feature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(parent, name, FeatureType.MANDATORY, featureMode);
+  public void addMandatoryFeature(String parent, String name, FeatureMode featureMode) {
+    __addFeature(parent, name, FeatureType.MANDATORY, featureMode);
   }
 
-  public void add_or_feature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(parent, name, FeatureType.OR, featureMode);
+  public void addOrFeature(String parent, String name, FeatureMode featureMode) {
+    __addFeature(parent, name, FeatureType.OR, featureMode);
   }
 
-  public void add_alternative_feature(String parent, String name, FeatureMode featureMode) {
-    __add_feature(parent, name, FeatureType.ALTERNATIVE, featureMode);
+  public void addAlternativeFeature(String parent, String name, FeatureMode featureMode) {
+    __addFeature(parent, name, FeatureType.ALTERNATIVE, featureMode);
   }
 
   public void initFM(String name) {
     dataManager.addRootFeature(name, FeatureType.MANDATORY, FeatureMode.CONCRETE);
   }
 
-  public void remove_all_dirs() {
-    remove_git_dir();
-    remove_splm_dir();
+  public void removeAllDirs() {
+    removeGitDir();
+    removeSplmDir();
   }
 
-  public void remove_git_dir() {
+  public void removeGitDir() {
     if (GitDir.exists_git_dir()) {
       SplMgrLogger.info(INFO_3__GIT_DIR_DETECTED, true);
       GitDir.remove_git_dir_with_msg();
@@ -63,7 +63,7 @@ public class SplMgr {
     }
   }
 
-  public void remove_splm_dir() {
+  public void removeSplmDir() {
     if (SplmDir.exists_splm_dir()) {
       SplMgrLogger.info(INFO_3__SPLM_DIR_DETECTED, true);
       SplmDir.remove_splm_dir_with_msg();
@@ -80,13 +80,13 @@ public class SplMgr {
     dataManager.saveData();
   }
 
-  public void create_hard_all_dirs() {
-    remove_all_dirs();
+  public void createHardAllDirs() {
+    removeAllDirs();
     SplmDir.create_splm_dir_with_msg();
     GitDir.create_git_dir_with_msg();
   }
 
-  public void create_hard_splm_dir() {
+  public void createHardSplmDir() {
     if (SplmDir.exists_splm_dir()) {
       SplMgrLogger.info(INFO_3__SPLM_DIR_DETECTED, true);
       SplmDir.remove_splm_dir_with_msg();
@@ -94,7 +94,7 @@ public class SplMgr {
     SplmDir.create_splm_dir_with_msg();
   }
 
-  public void create_soft_git_dir() {
+  public void createSoftGitDir() {
     if (!GitDir.exists_git_dir()) {
       GitDir.create_git_dir_with_msg();
     } else {
@@ -103,11 +103,11 @@ public class SplMgr {
     }
   }
 
-  public boolean exists_splm_dir() {
+  public boolean existsSplmDir() {
     return SplmDir.exists_splm_dir();
   }
 
-  public void create_splm_dir() {
+  public void createSplmDir() {
     SplmDir.create_splm_dir_with_msg();
   }
 
@@ -147,7 +147,7 @@ public class SplMgr {
     dataManager.genGitBranches(gitMgr);
   }
 
-  public boolean exists_git_dir() {
+  public boolean existsGitDir() {
     return GitDir.exists_git_dir();
   }
 

@@ -31,24 +31,24 @@ public class Init implements Runnable {
   public void run() {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
     if (ff) {
-      splMgr.create_hard_all_dirs(); // hard means 'and remove'
+      splMgr.createHardAllDirs(); // hard means 'and remove'
     } else {
-      if (splMgr.exists_splm_dir()) {
+      if (splMgr.existsSplmDir()) {
         if (f) {
-          splMgr.create_hard_splm_dir();
-          splMgr.create_soft_git_dir(); // soft means it not exits
+          splMgr.createHardSplmDir();
+          splMgr.createSoftGitDir(); // soft means it not exits
         } else {
           SplMgrLogger.info(INFO_3__SPLM_DIR_DETECTED, true);
           SplMgrLogger.warn(WARN_3__WE_COULD_NOT_CREATE_SPLM_DIR_BECAUSE_ALREADY_EXITS, true);
-          if (!splMgr.exists_git_dir()) {
-            splMgr.create_soft_git_dir();
+          if (!splMgr.existsGitDir()) {
+            splMgr.createSoftGitDir();
           } else {
             SplMgrLogger.info(INFO_3__GIT_DIR_DETECTED, true);
           }
         }
       } else {
-        splMgr.create_splm_dir();
-        splMgr.create_soft_git_dir();
+        splMgr.createSplmDir();
+        splMgr.createSoftGitDir();
       }
     }
     splMgr.initGit();

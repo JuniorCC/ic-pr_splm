@@ -24,13 +24,13 @@ public class RemoveDir implements Runnable {
   public void run() {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
     if (git) {
-      splMgr.remove_git_dir();
+      splMgr.removeGitDir();
       return;
     }
     if (all) {
-      splMgr.remove_all_dirs();
+      splMgr.removeAllDirs();
       return;
     }
-    splMgr.remove_splm_dir();
+    splMgr.removeSplmDir();
   }
 }
