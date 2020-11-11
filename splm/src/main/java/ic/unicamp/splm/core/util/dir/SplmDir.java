@@ -41,7 +41,7 @@ public class SplmDir {
     File xgit_dir_as_file = SplmDir.get_splm_dir__as_file();
     boolean file_was_created = xgit_dir_as_file.mkdir();
     if (file_was_created) {
-      CommonDir.setHiddenAttrib(SplmDir.get_splm_dir__as_path());
+      CommonDir.set_hidden_attrib(SplmDir.get_splm_dir__as_path());
       return true;
     }
     return false;

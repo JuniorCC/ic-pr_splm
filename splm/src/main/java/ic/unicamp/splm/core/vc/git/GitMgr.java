@@ -31,7 +31,7 @@ public class GitMgr {
       SplMgrLogger.error(ERR_0__CREATING_JGIT_OBJ, false);
       e.printStackTrace();
     }
-    if (!__exitsLocalBranch("master")) {
+    if (!__exitsGitLocalBranch("master")) {
       File myFile =
           new File(git.getRepository().getDirectory().getParent(), ".gitignore.hello.splm");
       try {
@@ -53,9 +53,9 @@ public class GitMgr {
   }
 
   public void createBranch(String parent, String branch) {
-    if (__exitsLocalBranch(parent)) {
+    if (__exitsGitLocalBranch(parent)) {
       try {
-        if (!__exitsLocalBranch(branch)) {
+        if (!__exitsGitLocalBranch(branch)) {
           if (parent.equals("master")) {
             git.branchCreate().setName(branch).call();
           } else {
@@ -75,7 +75,7 @@ public class GitMgr {
     }
   }
 
-  private boolean __exitsLocalBranch(String name) {
+  private boolean __exitsGitLocalBranch(String name) {
     boolean exits = false;
     try {
       // List<String> gitBranchList1 =

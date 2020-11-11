@@ -51,7 +51,7 @@ public class ObjectDir {
     File object_dir_as_file = ObjectDir.get_splm_obj_dir__as_file();
     boolean file_was_created = object_dir_as_file.mkdir();
     if (file_was_created) {
-      CommonDir.setHiddenAttrib(ObjectDir.get_splm_obj_dir__as_path());
+      CommonDir.set_hidden_attrib(ObjectDir.get_splm_obj_dir__as_path());
       return true;
     }
     return false;

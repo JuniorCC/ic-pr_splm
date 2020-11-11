@@ -88,25 +88,25 @@ public class Cmd implements Runnable {
     String asciiArt = FigletFont.convertOneLine(INF_0__SPLM_ART_ASCII);
     SplMgrLogger.message(asciiArt, true);
     SplMgrLogger.message_ln(INF_0__WELCOME_SPLM, false);
-    __run_default_commands();
-    __run_splm_prompt();
+    __runDefaultCommands();
+    __runSplmPrompt();
   }
 
-  private void __run_default_commands() {
+  private void __runDefaultCommands() {
     CommandLine cmd_version = new CommandLine(new Version());
     CommandLine cmd_load = new CommandLine(new LoadData());
     SplMgrLogger.info(INF_0__SPLM_AUTHOR, true);
     cmd_version.execute();
-    __print_scanning_files();
+    __printScanningFiles();
     cmd_load.execute();
-    __print_end_scanning_files();
+    __printEndScanningFiles();
   }
 
-  private void __run_splm_prompt() {
+  private void __runSplmPrompt() {
     boolean alive = true;
     Scanner sc = new Scanner(System.in);
     while (alive) {
-      __print_prompt();
+      __printPrompt();
       String line = sc.nextLine();
       List<String> inputs = new LinkedList<>(Arrays.asList(line.split(" ")));
       if (!line.isEmpty()) {
@@ -118,19 +118,19 @@ public class Cmd implements Runnable {
             {
               alive = false;
               CommandLine commandLine = new CommandLine(new Exit());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           case CMD_INIT:
             {
               CommandLine commandLine = new CommandLine(new Init());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           case CMD_VERSION:
             {
               CommandLine commandLine = new CommandLine(new Version());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
 
@@ -139,19 +139,19 @@ public class Cmd implements Runnable {
           case CMD_CLEAR_DATA:
             {
               CommandLine commandLine = new CommandLine(new ClearData());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           case CMD_LOAD_DATA:
             {
               CommandLine commandLine = new CommandLine(new LoadData());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           case CMD_SAVE_DATA:
             {
               CommandLine commandLine = new CommandLine(new SaveData());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
 
@@ -160,7 +160,7 @@ public class Cmd implements Runnable {
           case CMD_REMOVE_DIR:
             {
               CommandLine commandLine = new CommandLine(new RemoveDir());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
 
@@ -168,19 +168,19 @@ public class Cmd implements Runnable {
           case CMD_CHECKOUT:
             {
               CommandLine commandLine = new CommandLine(new Checkout());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           case CMD_PACK:
             {
               CommandLine commandLine = new CommandLine(new Pack());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           case CMD_STATUS:
             {
               CommandLine commandLine = new CommandLine(new Status());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
 
@@ -188,7 +188,7 @@ public class Cmd implements Runnable {
           case CMD_SHOW_BRM:
             {
               CommandLine commandLine = new CommandLine(new ShowBrM());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
 
@@ -197,27 +197,27 @@ public class Cmd implements Runnable {
           case CMD_ADD_FEATURE:
             {
               CommandLine commandLine = new CommandLine(new AddFeature());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
             // graph -> fm
           case CMD_INIT_FM:
             {
               CommandLine commandLine = new CommandLine(new InitFM());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           case CMD_SHOW_FM:
             {
               CommandLine commandLine = new CommandLine(new ShowFM());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
             // graph -> mp
           case CMD_SHOW_MPM:
             {
               CommandLine commandLine = new CommandLine(new ShowMpM());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
 
@@ -225,46 +225,46 @@ public class Cmd implements Runnable {
           case CMD_ADD_PROD:
             {
               CommandLine commandLine = new CommandLine(new AddProduct());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
             // graph -> pr
           case CMD_SHOW_PRM:
             {
               CommandLine commandLine = new CommandLine(new ShowPrM());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
             // graph
           case CMD_FULFILL_GRAPH:
             {
               CommandLine commandLine = new CommandLine(new FulfillGraph());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
             // spl
           case CMD_CHECK_CONFLICT:
             {
               CommandLine commandLine = new CommandLine(new CheckConflict());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           case CMD_GENERATE_BRANCHES:
             {
               CommandLine commandLine = new CommandLine(new GenerateBranches());
-              __execute_cmd(inputs, commandLine);
+              __executeCmd(inputs, commandLine);
               break;
             }
           default:
-            __print_cmd_not_valid();
+            __printCmdNotValid();
             break;
         }
       }
     }
   }
 
-  private void __execute_cmd(List<String> inputs, CommandLine command) {
-    __print_cmd_valid();
+  private void __executeCmd(List<String> inputs, CommandLine command) {
+    __printCmdValid();
     if (command != null) {
       inputs.remove(0); // remove the command from the arguments
       if (inputs.isEmpty()) {
@@ -274,30 +274,30 @@ public class Cmd implements Runnable {
         command.execute(new_args); // send arguments
       }
     }
-    __print_cmd_end();
+    __printCmdEnd();
   }
 
-  private void __print_scanning_files() {
+  private void __printScanningFiles() {
     SplMgrLogger.message_ln(INF_0__SCANNING_FILES, false);
   }
 
-  private void __print_end_scanning_files() {
+  private void __printEndScanningFiles() {
     SplMgrLogger.message_ln(INF_0__END_SCANNING_FILES, false);
   }
 
-  private void __print_cmd_valid() {
+  private void __printCmdValid() {
     SplMgrLogger.message_ln(INF_0__CMD_ACCEPTED, false);
   }
 
-  private void __print_cmd_end() {
+  private void __printCmdEnd() {
     SplMgrLogger.message_ln(INF_0__CMD_END, false);
   }
 
-  private void __print_cmd_not_valid() {
+  private void __printCmdNotValid() {
     SplMgrLogger.message_ln(INF_0__CMD_NOT_VALID, false);
   }
 
-  private void __print_prompt() {
+  private void __printPrompt() {
     SplMgrLogger.message(INF_0__PROMPT, false);
   }
 }
