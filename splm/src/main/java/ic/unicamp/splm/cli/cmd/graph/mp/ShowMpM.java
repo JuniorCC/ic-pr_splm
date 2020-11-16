@@ -11,5 +11,6 @@ public class ShowMpM implements Runnable {
   @Override
   public void run() {
     SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+    splMgr.showMpM();
   }
 }

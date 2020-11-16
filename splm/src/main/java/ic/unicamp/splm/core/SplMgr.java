@@ -153,10 +153,14 @@ public class SplMgr {
 
   public void addProduct(String name, List<String> features) {
     dataManager.addProduct(name, features);
-    SplMgrLogger.info(INFO_0__PRODUCT_ADDED, true);
+    SplMgrLogger.info(String.format(INFO_0__PRODUCT_ADDED, name) , true);
   }
 
   public boolean verifyFeature(String feature) {
     return dataManager.verifyFeature(feature);
+  }
+
+  public void showMpM() {
+    dataManager.showMpM();
   }
 }

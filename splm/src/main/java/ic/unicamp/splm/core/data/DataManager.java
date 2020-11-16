@@ -622,7 +622,50 @@ public class DataManager {
     return null;
   }
 
-  public void showPrM() {}
+  public void showPrM() {
+    Graph<Vertex, Edge> pr_subgraph = reduceGraphToPRGraph();
+    __showProducts(pr_subgraph, false, HashObjectType.PRODUCT);
+  }
+
+  private void __showProducts(Graph<Vertex, Edge> pr_subgraph, Boolean showData, HashObjectType product) {
+    StringBuilder stringBuilder = new StringBuilder();
+    pr_subgraph.vertexSet().forEach(vertex -> {
+      if(vertex.getType().equals(VertexType.PRODUCT)){
+        stringBuilder.append(vertex.getId()).append(" -> ");
+
+        Set<Edge> edges = pr_subgraph.outgoingEdgesOf(vertex);
+        for (Edge e: edges) {
+          stringBuilder.append(pr_subgraph.getEdgeTarget(e).getId()).append(", ");
+        }
+        stringBuilder.append("\n");
+      }
+    });
+    SplMgrLogger.info(stringBuilder.toString(), true);
+  }
+
+  private Graph<Vertex, Edge> reduceGraphToPRGraph() {
+    Set<Edge> edges =
+            graph.edgeSet().stream()
+                    .filter(edge -> edge.getType().equals(EdgeType.PRODUCT))
+                    .collect(Collectors.toSet());
+    Set<Vertex> vertices = new LinkedHashSet<>();
+    for (Edge e:edges) {
+      vertices.add(graph.getEdgeTarget(e));
+    }
+    Set<Vertex> vertexSet =
+            graph.vertexSet().stream()
+                    .filter(vertex -> vertex.getType().equals(VertexType.PRODUCT))
+                    .collect(Collectors.toSet());
+    vertices.addAll(vertexSet);
+
+    Graph<Vertex, Edge> pr_subgraph = new AsSubgraph<>(graph, vertices);
+    Set<Edge> edges_to_remove =
+            pr_subgraph.edgeSet().stream()
+                    .filter(edge -> !edge.getType().equals(EdgeType.PRODUCT))
+                    .collect(Collectors.toSet());
+    pr_subgraph.removeAllEdges(edges_to_remove);
+    return pr_subgraph;
+  }
 
   public boolean verifyFeature(String feature) {
     String id_feature = IDGenerator.generateFeatureID(feature);
@@ -647,5 +690,50 @@ public class DataManager {
         }
       }
     }
+  }
+
+  public void showMpM() {
+    Graph<Vertex, Edge> pr_subgraph = reduceGraphToMpGraph();
+    __showMapping(pr_subgraph, false, HashObjectType.MAPPING);
+  }
+
+  private void __showMapping(Graph<Vertex, Edge> pr_subgraph, Boolean showData, HashObjectType mapping) {
+    StringBuilder stringBuilder = new StringBuilder();
+    pr_subgraph.vertexSet().forEach(vertex -> {
+      if(vertex.getType().equals(VertexType.MAPPING)){
+        stringBuilder.append(vertex.getId()).append(" -> ");
+
+        Set<Edge> edges = pr_subgraph.outgoingEdgesOf(vertex);
+        for (Edge e: edges) {
+          stringBuilder.append(pr_subgraph.getEdgeTarget(e).getId()).append(", ");
+        }
+        stringBuilder.append("\n");
+      }
+    });
+    SplMgrLogger.info(stringBuilder.toString(), true);
+  }
+
+  private Graph<Vertex, Edge> reduceGraphToMpGraph() {
+    Set<Edge> edges =
+            graph.edgeSet().stream()
+                    .filter(edge -> edge.getType().equals(EdgeType.MAPPING))
+                    .collect(Collectors.toSet());
+    Set<Vertex> vertices = new LinkedHashSet<>();
+    for (Edge e:edges) {
+      vertices.add(graph.getEdgeTarget(e));
+    }
+    Set<Vertex> vertexSet =
+            graph.vertexSet().stream()
+                    .filter(vertex -> vertex.getType().equals(VertexType.MAPPING))
+                    .collect(Collectors.toSet());
+    vertices.addAll(vertexSet);
+
+    Graph<Vertex, Edge> pr_subgraph = new AsSubgraph<>(graph, vertices);
+    Set<Edge> edges_to_remove =
+            pr_subgraph.edgeSet().stream()
+                    .filter(edge -> !edge.getType().equals(EdgeType.MAPPING))
+                    .collect(Collectors.toSet());
+    pr_subgraph.removeAllEdges(edges_to_remove);
+    return pr_subgraph;
   }
 }
