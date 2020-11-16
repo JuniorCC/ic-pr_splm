@@ -62,6 +62,7 @@ public class DataManager {
   public void addRootFeature(String name, FeatureType featureType, FeatureMode featureMode) {
 
     String root_feature_id = IDGenerator.generateFeatureID(name);
+    setRoot(name);
 
     if (hashtable.containsKey(root_feature_id)) {
       String msg = String.format(WARN_0__FEATURE_ROOT_ALREADY_EXITS, name);
@@ -71,6 +72,17 @@ public class DataManager {
     __createFeatureVertex(root_feature_id, name, featureType, featureMode);
     String msg = String.format(INFO_3__ADDED_ROOT_FEATURE, name);
     SplMgrLogger.info(msg, true);
+  }
+
+  private void setRoot(String name) {
+    hashtable.put("root",HashValue.builder().object(name).type(HashObjectType.ROOT).build());
+  }
+
+  private String getRoot() {
+    if (hashtable.containsKey("root")) {
+    return (String)hashtable.get("root").getObject();
+    }
+    return null;
   }
 
   public void addFeature(
@@ -231,9 +243,6 @@ public class DataManager {
 
   private void __loadHashMapData() {
     try {
-      /* Type type = new TypeToken<Hashtable<String, HashValue>>() {}.getType();
-      String json = "{\"k1\":\"v1\",\"k2\":\"v2\"}";
-      Hashtable<String, HashValue> clonedMap = gson.fromJson(type, new FileReader(filePath));*/
       FileReader fileReader =
           new FileReader(String.valueOf(HashMapDir.get_splm_obj_hash_map_file__as_path()));
       Type type = new TypeToken<Hashtable<String, HashValue>>() {}.getType();
@@ -382,7 +391,9 @@ public class DataManager {
 
   public void __showFM(boolean showData) {
     Graph<Vertex, Edge> fm_subgraph = reduceGraphToFMGraph();
-    __showSubGraph(fm_subgraph, showData, HashObjectType.FEATURE);
+    String root_id = IDGenerator.generateFeatureID( getRoot());
+
+    __showSubGraph(fm_subgraph, showData, HashObjectType.FEATURE, root_id);
   }
 
   @NotNull
@@ -420,7 +431,6 @@ public class DataManager {
   public void clearData() {
     hashtable = new Hashtable<>();
     graph = new DefaultDirectedGraph<>(Edge.class);
-    ;
   }
 
   private void __genMapAndBrVertexes(Graph<Vertex, Edge> subgraph) {
@@ -493,35 +503,21 @@ public class DataManager {
 
   public void showBrModel() {
     Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
-    __showSubGraph(br_subgraph, false, HashObjectType.BRANCH);
+    String root_id = IDGenerator.generateBranchID( getRoot());
+    __showSubGraph(br_subgraph, false, HashObjectType.BRANCH, root_id);
   }
 
   public void showRawBrModel() {
     Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
-    __showSubGraph(br_subgraph, true, HashObjectType.BRANCH);
+    String root_id = IDGenerator.generateBranchID( getRoot());
+    __showSubGraph(br_subgraph, true, HashObjectType.BRANCH, root_id);
   }
 
   private void __showSubGraph(
-      Graph<Vertex, Edge> br_subgraph, boolean showData, HashObjectType hashObjectType) {
+          Graph<Vertex, Edge> br_subgraph, boolean showData, HashObjectType hashObjectType, String rootId) {
 
-/*    BreadthFirstIterator<Vertex, Edge> bfs1 = new BreadthFirstIterator<>(graph);
-    while (bfs1.hasNext()) {
-      Vertex vertex = bfs1.next();
-      //Vertex parentVertex = bfs.getParent(vertex);
-      Set<Edge> outgoing_Edges = br_subgraph.outgoingEdgesOf(vertex);
-      StringBuilder stringBuilder = new StringBuilder();
-      if (showData) {
-        __showRawData(stringBuilder, vertex.getId(), hashObjectType);
-      }
-      stringBuilder.append(String.format("%S ->", vertex.getId()));
-      for (Edge item : outgoing_Edges) {
-        stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
-      }
-      SplMgrLogger.info(stringBuilder.toString(), false);
-
-    }*/
-
-    BreadthFirstIterator<Vertex, Edge> bfs = new BreadthFirstIterator<>(br_subgraph);
+    Vertex root = __retrieveVertexById(rootId);
+    BreadthFirstIterator<Vertex, Edge> bfs = new BreadthFirstIterator<>(br_subgraph,root);
     while (bfs.hasNext()) {
       Vertex vertex = bfs.next();
       //Vertex parentVertex = bfs.getParent(vertex);
@@ -535,26 +531,7 @@ public class DataManager {
         stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
       }
       SplMgrLogger.info(stringBuilder.toString(), false);
-
     }
-
-  /*  List<Vertex> vertexList =
-        br_subgraph.vertexSet().stream()
-            .sorted(Comparator.comparingInt(br_subgraph::outDegreeOf))
-            .collect(Collectors.toList());
-    vertexList.forEach(
-        vertex -> {
-          Set<Edge> outgoing_Edges = br_subgraph.outgoingEdgesOf(vertex);
-          StringBuilder stringBuilder = new StringBuilder();
-          if (showData) {
-            __showRawData(stringBuilder, vertex.getId(), hashObjectType);
-          }
-          stringBuilder.append(String.format("%S ->", vertex.getId()));
-          for (Edge item : outgoing_Edges) {
-            stringBuilder.append(" ").append(br_subgraph.getEdgeTarget(item).getId()).append(",");
-          }
-          SplMgrLogger.info(stringBuilder.toString(), false);
-        });*/
   }
 
   private void __showRawData(
