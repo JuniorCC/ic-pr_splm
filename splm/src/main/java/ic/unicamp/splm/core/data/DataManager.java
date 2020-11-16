@@ -405,7 +405,7 @@ public class DataManager {
 
     Graph<Vertex, Edge> fm_subgraph = new AsSubgraph<>(graph, vertices);
     Set<Edge> edges_to_remove =
-        graph.edgeSet().stream()
+            fm_subgraph.edgeSet().stream()
             .filter(edge -> !edge.getType().equals(EdgeType.FEATURE))
             .collect(Collectors.toSet());
     fm_subgraph.removeAllEdges(edges_to_remove);
@@ -421,7 +421,7 @@ public class DataManager {
 
     Graph<Vertex, Edge> fm_subgraph = new AsSubgraph<>(graph, vertices);
     Set<Edge> edges_to_remove =
-        graph.edgeSet().stream()
+            fm_subgraph.edgeSet().stream()
             .filter(edge -> !edge.getType().equals(EdgeType.BRANCH))
             .collect(Collectors.toSet());
     fm_subgraph.removeAllEdges(edges_to_remove);
