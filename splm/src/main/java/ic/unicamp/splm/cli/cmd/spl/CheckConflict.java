@@ -4,8 +4,9 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "check-conflict")
 public class CheckConflict implements Runnable {
-  public static final String command_name = "check-conflict";
+    public static final String command_name = "check-conflict";
 
-  @Override
-  public void run() {}
+    @Override
+    public void run() {
+    }
 }

@@ -6,11 +6,11 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "show-prm")
 public class ShowPrM implements Runnable {
-  public static final String command_name = "show-prm";
+    public static final String command_name = "show-prm";
 
-  @Override
-  public void run() {
-    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
-    splMgr.showPrM();
-  }
+    @Override
+    public void run() {
+        SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+        splMgr.showPrM();
+    }
 }

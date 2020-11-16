@@ -23,40 +23,39 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit test for simple App.
  */
-public class GItCreateBranch
-{
+public class GItCreateBranch {
     Git git;
-  @Before
-  public void setUp() throws Exception {
-      FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-      repositoryBuilder.setMustExist(true);
-      repositoryBuilder.setGitDir(GitDir.get_git_dir__as_file());
-      try {
-          Repository repository = repositoryBuilder.build();
-          this.git = new Git(repository);
-      } catch (IOException e) {
-          SplMgrLogger.error(ERR_0__CREATING_JGIT_OBJ, false);
-          e.printStackTrace();
-      }
-  }
+
+    @Before
+    public void setUp() throws Exception {
+        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+        repositoryBuilder.setMustExist(true);
+        repositoryBuilder.setGitDir(GitDir.get_git_dir__as_file());
+        try {
+            Repository repository = repositoryBuilder.build();
+            this.git = new Git(repository);
+        } catch (IOException e) {
+            SplMgrLogger.error(ERR_0__CREATING_JGIT_OBJ, false);
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Rigorous Test :-)
      */
     @Test
-    public void shouldAnswerWithTrue()
-    {
+    public void shouldAnswerWithTrue() {
 
 
-        assertTrue( true );
+        assertTrue(true);
         String parent = "master";
         String branch = "B_1";
         if (__exitsLocalBranch(parent)) {
             try {
                 if (!__exitsLocalBranch(branch)) {
-                    if(parent.equals("master")){
+                    if (parent.equals("master")) {
                         git.branchCreate().setName(branch).call();
-                    }else{
+                    } else {
                         git.branchCreate().setName(branch).setStartPoint(parent).setForce(true).call();
                     }
 
@@ -71,8 +70,9 @@ public class GItCreateBranch
             SplMgrLogger.error(String.format(WAR_0__PARENT_GIT_BRANCH_DOES_NOT_EXITS, parent), true);
         }
     }
+
     private boolean __exitsLocalBranch(String name) {
-        if(name.equals("master")) return true;
+        if (name.equals("master")) return true;
         boolean exits = false;
         try {
             List<String> gitBranchList1 = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call().stream().map(Ref::getName).collect(Collectors.toList());

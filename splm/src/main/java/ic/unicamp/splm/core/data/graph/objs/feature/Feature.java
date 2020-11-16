@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class Feature {
 
-  String name;
+    String name;
 
-  FeatureMode mode;
+    FeatureMode mode;
 
-  FeatureType type;
+    FeatureType type;
 
-  boolean orParent;
+    boolean orParent;
 }

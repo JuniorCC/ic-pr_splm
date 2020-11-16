@@ -6,11 +6,11 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "save-data")
 public class SaveData implements Runnable {
-  public static final String command_name = "save-data";
+    public static final String command_name = "save-data";
 
-  @Override
-  public void run() {
-    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
-    splMgr.saveData();
-  }
+    @Override
+    public void run() {
+        SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+        splMgr.saveData();
+    }
 }

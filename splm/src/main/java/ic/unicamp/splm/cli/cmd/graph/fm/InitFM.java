@@ -6,17 +6,17 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "init-fm")
 public class InitFM implements Runnable {
-  public static final String command_name = "init-fm";
+    public static final String command_name = "init-fm";
 
-  @CommandLine.Parameters(
-      paramLabel = "name",
-      description = "root feature name",
-      defaultValue = "Base")
-  String name;
+    @CommandLine.Parameters(
+            paramLabel = "name",
+            description = "root feature name",
+            defaultValue = "Base")
+    String name;
 
-  @Override
-  public void run() {
-    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
-    splMgr.initFM(name);
-  }
+    @Override
+    public void run() {
+        SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+        splMgr.initFM(name);
+    }
 }

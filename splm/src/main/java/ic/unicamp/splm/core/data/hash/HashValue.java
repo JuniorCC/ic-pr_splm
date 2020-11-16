@@ -7,6 +7,6 @@ import lombok.Value;
 @Builder
 @Value
 public class HashValue {
-  Object object;
-  HashObjectType type;
+    Object object;
+    HashObjectType type;
 }

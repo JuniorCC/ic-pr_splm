@@ -10,7 +10,7 @@ import org.jgrapht.graph.DefaultEdge;
 @Builder
 @Data
 public class EdgeEB extends DefaultEdge {
-  EdgeType type;
-  String id; // fixing hash value
+    EdgeType type;
+    String id; // fixing hash value
 
 }

@@ -16,60 +16,60 @@ import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_4__SPLM_DIR_NOT_REMO
 
 public class SplmDir {
 
-  public static Path get_splm_dir__as_path() {
-    String currentDirectory = System.getProperty("user.dir");
-    return Paths.get(currentDirectory, SPLM_DIR);
-  }
-
-  public static File get_splm_dir__as_file() {
-    return new File(String.valueOf(SplmDir.get_splm_dir__as_path()));
-  }
-
-  public static boolean exists_splm_dir() {
-    return SplmDir.get_splm_dir__as_file().exists();
-  }
-
-  public static void create_splm_dir_with_msg() {
-    if (SplmDir.create_splm_dir()) {
-      SplMgrLogger.info(INF_0__SPLM_DIR_CREATED, true);
-    } else {
-      SplMgrLogger.warn(WARN_4__SPLM_DIR_NOT_CREATED, true);
+    public static Path get_splm_dir__as_path() {
+        String currentDirectory = System.getProperty("user.dir");
+        return Paths.get(currentDirectory, SPLM_DIR);
     }
-  }
 
-  public static boolean create_splm_dir() {
-    File xgit_dir_as_file = SplmDir.get_splm_dir__as_file();
-    boolean file_was_created = xgit_dir_as_file.mkdir();
-    if (file_was_created) {
-      CommonDir.set_hidden_attrib(SplmDir.get_splm_dir__as_path());
-      return true;
+    public static File get_splm_dir__as_file() {
+        return new File(String.valueOf(SplmDir.get_splm_dir__as_path()));
     }
-    return false;
-  }
 
-  public static void remove_splm_dir_with_msg() {
-    if (SplmDir.remove_splm_dir()) {
-      SplMgrLogger.info(INF_0__SPLM_DIR_REMOVED, true);
-    } else {
-      SplMgrLogger.warn(WARN_4__SPLM_DIR_NOT_REMOVED, true);
+    public static boolean exists_splm_dir() {
+        return SplmDir.get_splm_dir__as_file().exists();
     }
-  }
 
-  public static boolean remove_splm_dir() {
-    if (SplmDir.exists_splm_dir()) {
-      try {
+    public static void create_splm_dir_with_msg() {
+        if (SplmDir.create_splm_dir()) {
+            SplMgrLogger.info(INF_0__SPLM_DIR_CREATED, true);
+        } else {
+            SplMgrLogger.warn(WARN_4__SPLM_DIR_NOT_CREATED, true);
+        }
+    }
+
+    public static boolean create_splm_dir() {
+        File xgit_dir_as_file = SplmDir.get_splm_dir__as_file();
+        boolean file_was_created = xgit_dir_as_file.mkdir();
+        if (file_was_created) {
+            CommonDir.set_hidden_attrib(SplmDir.get_splm_dir__as_path());
+            return true;
+        }
+        return false;
+    }
+
+    public static void remove_splm_dir_with_msg() {
+        if (SplmDir.remove_splm_dir()) {
+            SplMgrLogger.info(INF_0__SPLM_DIR_REMOVED, true);
+        } else {
+            SplMgrLogger.warn(WARN_4__SPLM_DIR_NOT_REMOVED, true);
+        }
+    }
+
+    public static boolean remove_splm_dir() {
+        if (SplmDir.exists_splm_dir()) {
+            try {
         /*        Files.walk(SplmDir.get_splm_dir__as_path())
         .map(Path::toFile)
         .sorted((o1, o2) -> -o1.compareTo(o2))
         .forEach(File::delete);*/
-        FileUtils.deleteDirectory(SplmDir.get_splm_dir__as_file());
-        return true;
-      } catch (IOException e) {
-        e.printStackTrace();
-        return false;
-      }
-    } else {
-      return true;
+                FileUtils.deleteDirectory(SplmDir.get_splm_dir__as_file());
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
-  }
 }

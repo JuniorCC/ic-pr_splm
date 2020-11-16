@@ -1,12 +1,13 @@
 package ic.unicamp.splm.core.vc.git;
 
 public class GitMgrBuilder {
-  private static GitMgr manager = null;
+    private static GitMgr manager = null;
 
-  private GitMgrBuilder() {}
+    private GitMgrBuilder() {
+    }
 
-  public static synchronized GitMgr getSingletonInstance() {
-    if (manager == null) manager = new GitMgr();
-    return manager;
-  }
+    public static synchronized GitMgr getSingletonInstance() {
+        if (manager == null) manager = new GitMgr();
+        return manager;
+    }
 }

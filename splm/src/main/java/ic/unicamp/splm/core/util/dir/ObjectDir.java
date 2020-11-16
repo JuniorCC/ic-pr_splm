@@ -16,61 +16,61 @@ import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_3__OBJ_DIR_NOT_CREAT
 
 public class ObjectDir {
 
-  // splm/object
-  public static Path get_splm_obj_dir__as_path() {
-    String currentDirectory = System.getProperty("user.dir");
-    return Paths.get(currentDirectory, SPLM_DIR, OBJECT_DIR);
-  }
-
-  public static File get_splm_obj_dir__as_file() {
-    Path path = ObjectDir.get_splm_obj_dir__as_path();
-    return new File(String.valueOf(path));
-  }
-
-  public static boolean exists_splm_obj_dir() {
-    return ObjectDir.get_splm_obj_dir__as_file().exists();
-  }
-
-  public static void create_splm_obj_dir_with_msg() {
-    if (ObjectDir.create_splm_obj_dir()) {
-      SplMgrLogger.info(INF_0__OBJ_DIR_CREATED, true);
-    } else {
-      SplMgrLogger.warn(WARN_3__OBJ_DIR_NOT_CREATED, true);
+    // splm/object
+    public static Path get_splm_obj_dir__as_path() {
+        String currentDirectory = System.getProperty("user.dir");
+        return Paths.get(currentDirectory, SPLM_DIR, OBJECT_DIR);
     }
-  }
 
-  public static boolean create_splm_obj_dir() {
-    if (ObjectDir.exists_splm_obj_dir()) {
-      SplMgrLogger.warn(WARN_3__OBJ_DIR_ALREADY_EXITS, true);
-      return false;
+    public static File get_splm_obj_dir__as_file() {
+        Path path = ObjectDir.get_splm_obj_dir__as_path();
+        return new File(String.valueOf(path));
     }
-    return create_obj_dir();
-  }
 
-  private static boolean create_obj_dir() {
-    File object_dir_as_file = ObjectDir.get_splm_obj_dir__as_file();
-    boolean file_was_created = object_dir_as_file.mkdir();
-    if (file_was_created) {
-      CommonDir.set_hidden_attrib(ObjectDir.get_splm_obj_dir__as_path());
-      return true;
+    public static boolean exists_splm_obj_dir() {
+        return ObjectDir.get_splm_obj_dir__as_file().exists();
     }
-    return false;
-  }
 
-  public static boolean remove_splm_obj_dir() {
-    if (ObjectDir.exists_splm_obj_dir()) {
-      try {
-        Files.walk(ObjectDir.get_splm_obj_dir__as_path())
-            .map(Path::toFile)
-            .sorted((o1, o2) -> -o1.compareTo(o2))
-            .forEach(File::delete);
-        return true;
-      } catch (IOException e) {
-        e.printStackTrace();
+    public static void create_splm_obj_dir_with_msg() {
+        if (ObjectDir.create_splm_obj_dir()) {
+            SplMgrLogger.info(INF_0__OBJ_DIR_CREATED, true);
+        } else {
+            SplMgrLogger.warn(WARN_3__OBJ_DIR_NOT_CREATED, true);
+        }
+    }
+
+    public static boolean create_splm_obj_dir() {
+        if (ObjectDir.exists_splm_obj_dir()) {
+            SplMgrLogger.warn(WARN_3__OBJ_DIR_ALREADY_EXITS, true);
+            return false;
+        }
+        return create_obj_dir();
+    }
+
+    private static boolean create_obj_dir() {
+        File object_dir_as_file = ObjectDir.get_splm_obj_dir__as_file();
+        boolean file_was_created = object_dir_as_file.mkdir();
+        if (file_was_created) {
+            CommonDir.set_hidden_attrib(ObjectDir.get_splm_obj_dir__as_path());
+            return true;
+        }
         return false;
-      }
-    } else {
-      return true;
     }
-  }
+
+    public static boolean remove_splm_obj_dir() {
+        if (ObjectDir.exists_splm_obj_dir()) {
+            try {
+                Files.walk(ObjectDir.get_splm_obj_dir__as_path())
+                        .map(Path::toFile)
+                        .sorted((o1, o2) -> -o1.compareTo(o2))
+                        .forEach(File::delete);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
 }

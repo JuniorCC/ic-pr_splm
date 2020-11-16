@@ -6,11 +6,11 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "clear-data")
 public class ClearData implements Runnable {
-  public static final String command_name = "clear-data";
+    public static final String command_name = "clear-data";
 
-  @Override
-  public void run() {
-    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
-    splMgr.clearData();
-  }
+    @Override
+    public void run() {
+        SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+        splMgr.clearData();
+    }
 }

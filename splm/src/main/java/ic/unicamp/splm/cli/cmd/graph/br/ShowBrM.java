@@ -6,18 +6,18 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "show-brm")
 public class ShowBrM implements Runnable {
-  public static final String command_name = "show-brm";
+    public static final String command_name = "show-brm";
 
-  @CommandLine.Option(names = "-data", description = "")
-  private boolean data;
+    @CommandLine.Option(names = "-data", description = "")
+    private boolean data;
 
-  @Override
-  public void run() {
-    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
-    if (data) {
-      splMgr.showRawBrM();
-      return;
+    @Override
+    public void run() {
+        SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+        if (data) {
+            splMgr.showRawBrM();
+            return;
+        }
+        splMgr.showBrM();
     }
-    splMgr.showBrM();
-  }
 }

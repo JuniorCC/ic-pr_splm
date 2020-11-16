@@ -223,7 +223,7 @@ public class IO {
         EdgeE edgeE = new EdgeE();
         edgeE.setType(EdgeType.FEATURE);
         edgeE.setId("V1A:V2A");
-        graph2.addEdge(vertex1,vertex2, edgeE);
+        graph2.addEdge(vertex1, vertex2, edgeE);
         //exporter
         DOTExporter<VertexV, EdgeE> exporter = new DOTExporter<>();
         Function<VertexV, String> exporter_func_v = (vertex) -> {

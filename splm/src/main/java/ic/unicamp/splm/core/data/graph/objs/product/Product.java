@@ -6,5 +6,5 @@ import lombok.Value;
 @Builder
 @Value
 public class Product {
-  String name;
+    String name;
 }

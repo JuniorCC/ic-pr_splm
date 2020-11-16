@@ -6,6 +6,6 @@ import lombok.Data;
 @Builder
 @Data
 public class Mapping {
-  String name;
-  MappingType type;
+    String name;
+    MappingType type;
 }

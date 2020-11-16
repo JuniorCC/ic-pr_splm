@@ -6,11 +6,11 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "load-data")
 public class LoadData implements Runnable {
-  public static final String command_name = "load-data";
+    public static final String command_name = "load-data";
 
-  @Override
-  public void run() {
-    SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
-    splMgr.loadData();
-  }
+    @Override
+    public void run() {
+        SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+        splMgr.loadData();
+    }
 }

@@ -9,22 +9,26 @@ import org.jgrapht.graph.DefaultEdge;
 
 public class Edge extends DefaultEdge {
 
-  @Setter @Getter EdgeType type;
-  @Setter @Getter String id; // fixing hash value
+    @Setter
+    @Getter
+    EdgeType type;
+    @Setter
+    @Getter
+    String id; // fixing hash value
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
-    if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    Edge edge = (Edge) o;
+        Edge edge = (Edge) o;
 
-    return new EqualsBuilder().append(type, edge.type).append(id, edge.id).isEquals();
-  }
+        return new EqualsBuilder().append(type, edge.type).append(id, edge.id).isEquals();
+    }
 
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder(17, 37).append(type).append(id).toHashCode();
-  }
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(type).append(id).toHashCode();
+    }
 }

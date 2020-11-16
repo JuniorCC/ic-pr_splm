@@ -6,5 +6,5 @@ import lombok.Data;
 @Builder
 @Data
 public class Branch {
-  String name;
+    String name;
 }

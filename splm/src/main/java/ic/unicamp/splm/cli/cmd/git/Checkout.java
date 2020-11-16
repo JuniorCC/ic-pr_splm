@@ -4,8 +4,9 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "checkout")
 public class Checkout implements Runnable {
-  public static final String command_name = "checkout";
+    public static final String command_name = "checkout";
 
-  @Override
-  public void run() {}
+    @Override
+    public void run() {
+    }
 }
