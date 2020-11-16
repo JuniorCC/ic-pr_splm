@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ic.unicamp.splm.core.util.msg.ErrorMsgTag.ERR_0__CREATING_JGIT_OBJ;
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__CREATED_BRANCH_FROM;
 import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__MASTER_BRANCH_CREATED;
 import static ic.unicamp.splm.core.util.msg.WarnMsgTag.*;
 
@@ -61,7 +62,8 @@ public class GitMgr {
           } else {
             git.branchCreate().setName(branch).setStartPoint(parent).setForce(true).call();
           }
-
+          SplMgrLogger.info(
+                  String.format(INF_0__CREATED_BRANCH_FROM, branch, parent), true);
         } else {
           SplMgrLogger.error(
               String.format(WAR_0__BRANCH_NAME_IS_BEEING_USED_IN_THE_LOCAL_GIT, branch), true);

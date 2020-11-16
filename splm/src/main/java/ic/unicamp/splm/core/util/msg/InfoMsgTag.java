@@ -40,4 +40,6 @@ public interface InfoMsgTag {
   String INFO_0__ADDED_PRODUCT_RELATION_TO_FEATURE = "Added product relation to '%s' feature";
   String INFO_0__FEATURE_FOUND = "Feature '%s' found";
   String INFO_0__PRODUCT_ADDED = "Product '%s' added";
+
+  String INF_0__CREATED_BRANCH_FROM = " Created git branch '%s' from '%S'";
 }

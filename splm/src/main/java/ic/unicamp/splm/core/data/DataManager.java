@@ -575,12 +575,14 @@ public class DataManager {
 
   public void genGitBranches(GitMgr gitMgr) {
     Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
-    __generateGitBranches(br_subgraph, gitMgr);
+    String rootId = IDGenerator.generateBranchID(getRoot());
+    __generateGitBranches(br_subgraph, gitMgr, rootId);
   }
 
-  private void __generateGitBranches(Graph<Vertex, Edge> br_subgraph, GitMgr gitMgr) {
+  private void __generateGitBranches(Graph<Vertex, Edge> br_subgraph, GitMgr gitMgr, String rootId) {
+    Vertex root = __retrieveVertexById(rootId);
     DepthFirstIterator<Vertex, Edge> dfs =
-        new DepthFirstIterator<>(br_subgraph); // Breadth First Iterator not work //dfs?
+        new DepthFirstIterator<>(br_subgraph,root);
     while (dfs.hasNext()) {
       Vertex vertex = dfs.next();
       Vertex parentVertex = null;
@@ -590,11 +592,6 @@ public class DataManager {
           break;
         }
       }
-      System.out.println(vertex.getId());
-      if (parentVertex != null) {
-        System.out.println(parentVertex.getId());
-      }
-      System.out.println(" -- ");
       Branch parentBranch = __retrieveBranch(parentVertex);
       Branch branch = __retrieveBranch(vertex);
       __createGitBranch(parentBranch, branch, gitMgr);
