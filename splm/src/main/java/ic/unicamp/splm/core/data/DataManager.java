@@ -631,16 +631,19 @@ public class DataManager {
     StringBuilder stringBuilder = new StringBuilder();
     pr_subgraph.vertexSet().forEach(vertex -> {
       if(vertex.getType().equals(VertexType.PRODUCT)){
-        stringBuilder.append(vertex.getId()).append(" -> ");
-
-        Set<Edge> edges = pr_subgraph.outgoingEdgesOf(vertex);
-        for (Edge e: edges) {
-          stringBuilder.append(pr_subgraph.getEdgeTarget(e).getId()).append(", ");
-        }
-        stringBuilder.append("\n");
+        __printData(pr_subgraph, stringBuilder, vertex);
       }
     });
     SplMgrLogger.info(stringBuilder.toString(), true);
+  }
+
+  private void __printData(Graph<Vertex, Edge> pr_subgraph, StringBuilder stringBuilder, Vertex vertex) {
+    stringBuilder.append(vertex.getId()).append(" -> ");
+    Set<Edge> edges = pr_subgraph.outgoingEdgesOf(vertex);
+    for (Edge e: edges) {
+      stringBuilder.append(pr_subgraph.getEdgeTarget(e).getId()).append(", ");
+    }
+    stringBuilder.append("\n");
   }
 
   private Graph<Vertex, Edge> reduceGraphToPRGraph() {
@@ -701,13 +704,7 @@ public class DataManager {
     StringBuilder stringBuilder = new StringBuilder();
     pr_subgraph.vertexSet().forEach(vertex -> {
       if(vertex.getType().equals(VertexType.MAPPING)){
-        stringBuilder.append(vertex.getId()).append(" -> ");
-
-        Set<Edge> edges = pr_subgraph.outgoingEdgesOf(vertex);
-        for (Edge e: edges) {
-          stringBuilder.append(pr_subgraph.getEdgeTarget(e).getId()).append(", ");
-        }
-        stringBuilder.append("\n");
+        __printData(pr_subgraph, stringBuilder, vertex);
       }
     });
     SplMgrLogger.info(stringBuilder.toString(), true);
