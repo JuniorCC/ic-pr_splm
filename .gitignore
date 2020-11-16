@@ -23,8 +23,9 @@
 hs_err_pid*
 
 splm/.idea/*
-splm/xgit.iml
+splm/splm.iml
 splm/target/
 splm/.splm/
 splm/.git/
 splm/.splm.logs/
+
