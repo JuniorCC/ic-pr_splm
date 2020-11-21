@@ -117,12 +117,12 @@ public class GitMgr {
             coCmd.setName(br_origin);
             coCmd.call();
 
-            for (String branch:branches) {
+            for (String branch : branches) {
                 MergeCommand mgCmd = git.merge();
                 Ref ref_branch = __retrieveRefFromBranch(branch);
                 mgCmd.include(ref_branch); // "foo" is considered as a Ref to a branch
                 MergeResult res = mgCmd.call();
-                if (res.getMergeStatus().equals(MergeResult.MergeStatus.CONFLICTING)){
+                if (res.getMergeStatus().equals(MergeResult.MergeStatus.CONFLICTING)) {
                     String conflicts = res.getConflicts().toString();
                     SplMgrLogger.info(
                             String.format(INF_0__YOU_COMMIT_GENERATE_CONFLICTS_WITH_PRODUCT, br_origin, branch, product_name, conflicts), true);
@@ -136,12 +136,12 @@ public class GitMgr {
         }
     }
 
-    private Ref __retrieveRefFromBranch(String branch_name){
+    private Ref __retrieveRefFromBranch(String branch_name) {
         List<Ref> branches = null;
         try {
             branches = git.branchList().call();
-            for(Ref branch : branches) {
-                if(branch.getName().equals(branch_name)){
+            for (Ref branch : branches) {
+                if (branch.getName().equals(branch_name)) {
                     return branch;
                 }
             }

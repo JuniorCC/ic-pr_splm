@@ -14,9 +14,9 @@ public class CheckConflict implements Runnable {
     @Override
     public void run() {
         SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
-        if(from == null){
+        if (from == null) {
             splMgr.checkConflict();
-        }else{
+        } else {
             splMgr.checkConflict(from);
         }
     }

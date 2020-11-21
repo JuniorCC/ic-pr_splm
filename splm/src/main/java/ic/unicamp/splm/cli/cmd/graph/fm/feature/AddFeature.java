@@ -45,31 +45,31 @@ public class AddFeature implements Runnable {
             featureMode = FeatureMode.ABSTRACT;
         }
         if (optional) {
-            for (String name:names) {
+            for (String name : names) {
                 splMgr.addOptionalFeature(parent, name, featureMode);
             }
             return;
         }
         if (mandatory) {
-            for (String name:names) {
+            for (String name : names) {
                 splMgr.addMandatoryFeature(parent, name, featureMode);
             }
             return;
         }
         if (or) {
-            for (String name:names) {
+            for (String name : names) {
                 splMgr.addOrFeature(parent, name, featureMode);
             }
             return;
         }
         if (alternative) {
-            for (String name:names) {
+            for (String name : names) {
                 splMgr.addAlternativeFeature(parent, name, featureMode);
             }
             return;
         }
         // default
-        for (String name:names) {
+        for (String name : names) {
             splMgr.addMandatoryFeature(parent, name, featureMode);
         }
     }

@@ -738,24 +738,28 @@ public class DataManager {
 
     private void __checkConflicts(GitMgr gitMgr, String branch_name) {
         Vertex vertex = __retrieveVertex(branch_name);
-        if(vertex!=null){
-            Set<Vertex> features =  __retrieveFeatures(vertex.getId());
+        if (vertex != null) {
+            Set<Vertex> features = __retrieveFeatures(vertex.getId());
             Set<Vertex> products = __retrieveProducts(features);
-            for (Vertex v_product:products) {
-                Set<Vertex> branches =__retrieveBranches(v_product.getId());
-                List<String> branches_name = new LinkedList<>();
-                for (Vertex v_branch:branches) {
-                    HashValue hashValue = hashtable.get(v_branch.getId());
-                    Branch branch =(Branch)hashValue.getObject();
-                    branches_name.add(branch.getName());
-                }
-                HashValue hashValue = hashtable.get(v_product.getId());
-                Product product =(Product)hashValue.getObject();
-                gitMgr.checkConflict(product.getName(), branch_name,branches_name);
+            for (Vertex v_product : products) {
+                __CheckConflictsByProduct(gitMgr, branch_name, v_product);
             }
-        }else{
+        } else {
             //msg we could find the branch with that name
         }
+    }
+
+    private void __CheckConflictsByProduct(GitMgr gitMgr, String branch_name, Vertex v_product) {
+        Set<Vertex> branches = __retrieveBranches(v_product.getId());
+        List<String> branches_name = new LinkedList<>();
+        for (Vertex v_branch : branches) {
+            HashValue hashValue = hashtable.get(v_branch.getId());
+            Branch branch = (Branch) hashValue.getObject();
+            branches_name.add(branch.getName());
+        }
+        HashValue hashValue = hashtable.get(v_product.getId());
+        Product product = (Product) hashValue.getObject();
+        gitMgr.checkConflict(product.getName(), branch_name, branches_name);
     }
 
     public void checkConflict(GitMgr gitMgr, String from) {
@@ -766,20 +770,21 @@ public class DataManager {
 
         Graph<Vertex, Edge> br_subgraph = reduceGraphToBrGraph();
 
-        for (Vertex vertex: br_subgraph.vertexSet()) {
+        for (Vertex vertex : br_subgraph.vertexSet()) {
             HashValue hashValue = hashtable.get(vertex.getId());
-            Branch branch = (Branch)hashValue.getObject();
-            if(branch.getName().equals(branch_name)){
+            Branch branch = (Branch) hashValue.getObject();
+            if (branch.getName().equals(branch_name)) {
                 return vertex;
             }
         }
         return null;
     }
+
     private Set<Vertex> __retrieveProducts(Set<Vertex> features) {
         Set<Vertex> products = new HashSet<>();
         Graph<Vertex, Edge> pr_subgraph = reduceGraphToPRGraph();
-        for (Vertex feature: features) {
-            for (Edge edge:pr_subgraph.incomingEdgesOf(feature)) {
+        for (Vertex feature : features) {
+            for (Edge edge : pr_subgraph.incomingEdgesOf(feature)) {
                 Vertex prod = pr_subgraph.getEdgeSource(edge);
                 products.add(prod);
             }
@@ -787,18 +792,20 @@ public class DataManager {
         return products;
     }
 
-    public Set<Vertex> __retrieveBranches(String productId){
+    public Set<Vertex> __retrieveBranches(String productId) {
         Graph<Vertex, Edge> pr_subgraph = reduceGraphToPRGraph();
         Graph<Vertex, Edge> mp_subgraph = reduceGraphToMpGraph();
+
         Vertex pr_vertex = __retrieveVertexById(productId);
+
         Set<Vertex> v_branches = new LinkedHashSet<>();
-        for (Edge edge:pr_subgraph.outgoingEdgesOf(pr_vertex)) {
-            Vertex vertex = pr_subgraph.getEdgeTarget(edge);
-            for (Edge mp_edge:mp_subgraph.incomingEdgesOf(vertex)) {
+        for (Edge edge : pr_subgraph.outgoingEdgesOf(pr_vertex)) {
+            Vertex f_vertex = pr_subgraph.getEdgeTarget(edge);
+            for (Edge mp_edge : mp_subgraph.incomingEdgesOf(f_vertex)) {
                 Vertex mp_vertex = mp_subgraph.getEdgeSource(mp_edge);
-                for (Edge br_edge:mp_subgraph.outgoingEdgesOf(mp_vertex)) {
+                for (Edge br_edge : mp_subgraph.outgoingEdgesOf(mp_vertex)) {
                     Vertex br_vertex = mp_subgraph.getEdgeTarget(br_edge);
-                    if(br_vertex.getType().equals(VertexType.BRANCH)){
+                    if (br_vertex.getType().equals(VertexType.BRANCH)) {
                         v_branches.add(br_vertex);
                     }
                 }
@@ -813,19 +820,19 @@ public class DataManager {
         }
         return branches;*/
     }
-    public Set<Vertex> __retrieveFeatures(String branchId){
+
+    public Set<Vertex> __retrieveFeatures(String branchId) {
         Graph<Vertex, Edge> mp_subgraph = reduceGraphToMpGraph();
+
         Vertex br_vertex = __retrieveVertexById(branchId);
+
         Set<Vertex> v_features = new LinkedHashSet<>();
-        for (Edge edge:mp_subgraph.incomingEdgesOf(br_vertex)) {
-            Vertex vertex = mp_subgraph.getEdgeSource(edge);
-            for (Edge mp_edge:mp_subgraph.incomingEdgesOf(vertex)) {
-                Vertex mp_vertex = mp_subgraph.getEdgeSource(mp_edge);
-                for (Edge br_edge : mp_subgraph.outgoingEdgesOf(mp_vertex)) {
-                    Vertex ft_vertex = mp_subgraph.getEdgeTarget(br_edge);
-                    if(ft_vertex.getType().equals(VertexType.FEATURE)){
-                        v_features.add(br_vertex);
-                    }
+        for (Edge edge : mp_subgraph.incomingEdgesOf(br_vertex)) {
+            Vertex mp_vertex = mp_subgraph.getEdgeSource(edge);
+            for (Edge mp_edge : mp_subgraph.outgoingEdgesOf(mp_vertex)) {
+                Vertex vertex = mp_subgraph.getEdgeTarget(mp_edge);
+                if (vertex.getType().equals(VertexType.FEATURE)) {
+                    v_features.add(vertex);
                 }
             }
         }
