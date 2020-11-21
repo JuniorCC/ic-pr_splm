@@ -374,7 +374,16 @@ public class DataManager {
     }
 
     private Vertex __retrieveVertexById(String id) {
-        for (Vertex node : graph.vertexSet()) {
+        return __retrieveVertexById(id,graph);
+/*        for (Vertex node : graph.vertexSet()) {
+            if (node.getId().equals(id)) {
+                return node;
+            }
+        }
+        return null;*/
+    }
+    private Vertex __retrieveVertexById(String id, Graph<Vertex, Edge> subgraph) {
+        for (Vertex node : subgraph.vertexSet()) {
             if (node.getId().equals(id)) {
                 return node;
             }
@@ -783,10 +792,14 @@ public class DataManager {
     private Set<Vertex> __retrieveProducts(Set<Vertex> features) {
         Set<Vertex> products = new HashSet<>();
         Graph<Vertex, Edge> pr_subgraph = reduceGraphToPRGraph();
+
         for (Vertex feature : features) {
-            for (Edge edge : pr_subgraph.incomingEdgesOf(feature)) {
-                Vertex prod = pr_subgraph.getEdgeSource(edge);
-                products.add(prod);
+            Vertex vertex = __retrieveVertexById(feature.getId(),pr_subgraph);
+            if(vertex != null){
+                for (Edge edge : pr_subgraph.incomingEdgesOf(vertex)) {
+                    Vertex prod = pr_subgraph.getEdgeSource(edge);
+                    products.add(prod);
+                }
             }
         }
         return products;
