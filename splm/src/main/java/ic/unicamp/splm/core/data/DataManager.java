@@ -800,6 +800,8 @@ public class DataManager {
                     Vertex prod = pr_subgraph.getEdgeSource(edge);
                     products.add(prod);
                 }
+            }else{
+                //error message here
             }
         }
         return products;
