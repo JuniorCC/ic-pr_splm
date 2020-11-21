@@ -12,8 +12,14 @@ public class AddFeature implements Runnable {
     @CommandLine.Parameters(paramLabel = "parent", description = "parent feature")
     String parent;
 
-    @CommandLine.Parameters(paramLabel = "name", description = "name of the feature")
-    String name;
+    @CommandLine.Parameters(
+            paramLabel = "names",
+            index = "1..",
+            description = "one ore more name of the feature")
+    String[] names;
+
+/*    @CommandLine.Parameters(paramLabel = "name", description = "name of the feature")
+    String name;*/
 
     @CommandLine.Option(names = "-optional", description = "'create-feature -optional'")
     private boolean optional;
@@ -39,22 +45,32 @@ public class AddFeature implements Runnable {
             featureMode = FeatureMode.ABSTRACT;
         }
         if (optional) {
-            splMgr.addOptionalFeature(parent, name, featureMode);
+            for (String name:names) {
+                splMgr.addOptionalFeature(parent, name, featureMode);
+            }
             return;
         }
         if (mandatory) {
-            splMgr.addMandatoryFeature(parent, name, featureMode);
+            for (String name:names) {
+                splMgr.addMandatoryFeature(parent, name, featureMode);
+            }
             return;
         }
         if (or) {
-            splMgr.addOrFeature(parent, name, featureMode);
+            for (String name:names) {
+                splMgr.addOrFeature(parent, name, featureMode);
+            }
             return;
         }
         if (alternative) {
-            splMgr.addAlternativeFeature(parent, name, featureMode);
+            for (String name:names) {
+                splMgr.addAlternativeFeature(parent, name, featureMode);
+            }
             return;
         }
         // default
-        splMgr.addMandatoryFeature(parent, name, featureMode);
+        for (String name:names) {
+            splMgr.addMandatoryFeature(parent, name, featureMode);
+        }
     }
 }
