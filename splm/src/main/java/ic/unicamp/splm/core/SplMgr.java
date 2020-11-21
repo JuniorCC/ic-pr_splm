@@ -167,4 +167,8 @@ public class SplMgr {
     public void checkConflict() {
         dataManager.checkConflict(gitMgr);
     }
+
+    public void checkConflict(String from) {
+        dataManager.checkConflict(gitMgr, from);
+    }
 }

@@ -733,6 +733,10 @@ public class DataManager {
 
     public void checkConflict(GitMgr gitMgr) {
         String branch_name = gitMgr.getCurrentBranch();
+        __checkConflicts(gitMgr, branch_name);
+    }
+
+    private void __checkConflicts(GitMgr gitMgr, String branch_name) {
         Vertex vertex = __retrieveVertex(branch_name);
         if(vertex!=null){
             Set<Vertex> features =  __retrieveFeatures(vertex.getId());
@@ -752,6 +756,10 @@ public class DataManager {
         }else{
             //msg we could find the branch with that name
         }
+    }
+
+    public void checkConflict(GitMgr gitMgr, String from) {
+        __checkConflicts(gitMgr, from);
     }
 
     private Vertex __retrieveVertex(String branch_name) {
@@ -830,4 +838,6 @@ public class DataManager {
         }
         return features;*/
     }
+
+
 }

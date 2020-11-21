@@ -8,9 +8,13 @@ import picocli.CommandLine;
 public class CheckConflict implements Runnable {
     public static final String command_name = "check-conflict";
 
+    @CommandLine.Parameters(paramLabel = "from", description = "from")
+    String from;
+
     @Override
     public void run() {
         SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
         splMgr.checkConflict();
+        splMgr.checkConflict(from);
     }
 }
