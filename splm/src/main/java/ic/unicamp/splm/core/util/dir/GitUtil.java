@@ -37,4 +37,7 @@ public class GitUtil {
         return String.format("%s%s", Merge_Tag, msg);
     }
 
+    public static String create_local_branch_name(String branch_name) {
+        return "refs/heads/"+branch_name;
+    }
 }

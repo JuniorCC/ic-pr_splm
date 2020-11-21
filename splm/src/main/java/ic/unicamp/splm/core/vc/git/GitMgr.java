@@ -137,9 +137,11 @@ public class GitMgr {
     }
 
     private Ref __retrieveRefFromBranch(String branch_name) {
+        branch_name = GitUtil.create_local_branch_name(branch_name);
         List<Ref> branches = null;
         try {
             branches = git.branchList().call();
+
             for (Ref branch : branches) {
                 if (branch.getName().equals(branch_name)) {
                     return branch;
