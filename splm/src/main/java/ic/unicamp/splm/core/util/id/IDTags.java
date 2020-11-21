@@ -6,4 +6,6 @@ public interface IDTags {
     String Branch_Tag = "B_";
     String Mapping_Tag = "M_";
     String Product_Tag = "P_";
+
+    String Merge_Tag = "MT_";
 }

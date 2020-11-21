@@ -747,7 +747,7 @@ public class DataManager {
                 }
                 HashValue hashValue = hashtable.get(v_product.getId());
                 Product product =(Product)hashValue.getObject();
-                gitMgr.checkConflict(product.getName(), branches_name);
+                gitMgr.checkConflict(product.getName(), branch_name,branches_name);
             }
         }else{
             //msg we could find the branch with that name

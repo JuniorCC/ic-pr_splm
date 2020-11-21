@@ -42,4 +42,7 @@ public interface InfoMsgTag {
     String INFO_0__PRODUCT_ADDED = "Product '%s' added";
 
     String INF_0__CREATED_BRANCH_FROM = " Created git branch '%s' from '%S'";
+
+    String INF_0__YOU_COMMIT_GENERATE_CONFLICTS_WITH_PRODUCT = "Your branch '%s' generate conflicts with the branch '%s' when producing " +
+            "product '%s' \n : '%S'";
 }

@@ -3,7 +3,10 @@ package ic.unicamp.splm.core.vc.git;
 import ic.unicamp.splm.core.util.dir.GitDir;
 import ic.unicamp.splm.core.util.dir.GitUtil;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
+import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.MergeCommand;
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -15,8 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ic.unicamp.splm.core.util.msg.ErrorMsgTag.ERR_0__CREATING_JGIT_OBJ;
-import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__CREATED_BRANCH_FROM;
-import static ic.unicamp.splm.core.util.msg.InfoMsgTag.INF_0__MASTER_BRANCH_CREATED;
+import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
 import static ic.unicamp.splm.core.util.msg.WarnMsgTag.*;
 
 public class GitMgr {
@@ -102,7 +104,48 @@ public class GitMgr {
         return null;
     }
 
-    public void checkConflict(String product_name, List<String> branches_name) {
+    public void checkConflict(String product_name, String br_origin, List<String> branches) {
+        branches.remove(br_origin); // remove my origin
 
+        String branch_name = GitUtil.create_merge_tag(product_name);
+        try {
+            git.branchCreate().setName(branch_name).setStartPoint(br_origin).call();
+
+            CheckoutCommand coCmd = git.checkout();
+            coCmd.setName(br_origin);
+            coCmd.call();
+
+            for (String branch:branches) {
+                MergeCommand mgCmd = git.merge();
+                Ref ref_branch = __retrieveRefFromBranch(branch);
+                mgCmd.include(ref_branch); // "foo" is considered as a Ref to a branch
+                MergeResult res = mgCmd.call();
+                if (res.getMergeStatus().equals(MergeResult.MergeStatus.CONFLICTING)){
+                    String conflicts = res.getConflicts().toString();
+                    SplMgrLogger.info(
+                            String.format(INF_0__YOU_COMMIT_GENERATE_CONFLICTS_WITH_PRODUCT, br_origin, branch, product_name, conflicts), true);
+                    break;
+                }
+            }
+
+            git.branchDelete().setBranchNames(branch_name).call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Ref __retrieveRefFromBranch(String branch_name){
+        List<Ref> branches = null;
+        try {
+            branches = git.branchList().call();
+            for(Ref branch : branches) {
+                if(branch.getName().equals(branch_name)){
+                    return branch;
+                }
+            }
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
