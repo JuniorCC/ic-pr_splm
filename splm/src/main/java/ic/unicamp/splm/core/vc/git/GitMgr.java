@@ -41,13 +41,11 @@ public class GitMgr {
                     new File(git.getRepository().getDirectory().getParent(), ".gitignore");
 
             try {
-
-                FileUtils.writeStringToFile(myFile, GitUtil.retrieve_git_ignore_content(), "ISO-8859-1");
-
                 if (!myFile.createNewFile()) {
                     SplMgrLogger.warn(WAR_0__GIT_IGNORE_HELLO_SPLM_WAS_NOT_CREATED, true);
                 } else {
-                    this.git.add().addFilepattern(".gitignore.hello.splm").call();
+                    FileUtils.writeStringToFile(myFile, GitUtil.retrieve_git_ignore_content(), "ISO-8859-1");
+                    this.git.add().addFilepattern(".gitignore").call();
                     this.git.commit().setMessage("SPLM: Init master branch with a commit").call();
                     SplMgrLogger.info(INF_0__MASTER_BRANCH_CREATED, true);
                 }
