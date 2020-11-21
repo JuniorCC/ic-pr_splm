@@ -751,14 +751,14 @@ public class DataManager {
             Set<Vertex> features = __retrieveFeatures(vertex.getId());
             Set<Vertex> products = __retrieveProducts(features);
             for (Vertex v_product : products) {
-                __CheckConflictsByProduct(gitMgr, branch_name, v_product);
+                __checkConflictsByProduct(gitMgr, branch_name, v_product);
             }
         } else {
             //msg we could find the branch with that name
         }
     }
 
-    private void __CheckConflictsByProduct(GitMgr gitMgr, String branch_name, Vertex v_product) {
+    private void __checkConflictsByProduct(GitMgr gitMgr, String branch_name, Vertex v_product) {
         Set<Vertex> branches = __retrieveBranches(v_product.getId());
         List<String> branches_name = new LinkedList<>();
         for (Vertex v_branch : branches) {
