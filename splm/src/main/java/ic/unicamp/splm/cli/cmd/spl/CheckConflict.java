@@ -8,7 +8,7 @@ import picocli.CommandLine;
 public class CheckConflict implements Runnable {
     public static final String command_name = "check-conflict";
 
-    @CommandLine.Parameters(paramLabel = "from", description = "from")
+    @CommandLine.Parameters(paramLabel = "from", description = "from", arity = "0..1")
     String from;
 
     @Override
