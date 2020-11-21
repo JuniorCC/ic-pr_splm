@@ -33,7 +33,8 @@ public class GitUtil {
                 "target/\n" +
                 "\n" +
                 "# prod\n" +
-                ".splm.logs/";
+                ".splm.logs/\n" +
+                ".gitignore\n";
         return String.format("%s%s", Merge_Tag, msg);
     }
 
