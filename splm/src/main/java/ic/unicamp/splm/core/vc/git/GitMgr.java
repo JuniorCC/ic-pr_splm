@@ -39,7 +39,6 @@ public class GitMgr {
         if (!__exitsGitLocalBranch("master")) {
             File myFile =
                     new File(git.getRepository().getDirectory().getParent(), ".gitignore");
-
             try {
                 if (!myFile.createNewFile()) {
                     SplMgrLogger.warn(WAR_0__GIT_IGNORE_HELLO_SPLM_WAS_NOT_CREATED, true);
