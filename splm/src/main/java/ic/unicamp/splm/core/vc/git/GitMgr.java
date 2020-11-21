@@ -1,6 +1,7 @@
 package ic.unicamp.splm.core.vc.git;
 
 import ic.unicamp.splm.core.util.dir.GitDir;
+import ic.unicamp.splm.core.util.dir.GitUtil;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -89,5 +90,19 @@ public class GitMgr {
             e.printStackTrace();
         }
         return exits;
+    }
+
+    public String getCurrentBranch() {
+        try {
+            String branch = git.getRepository().getFullBranch();
+            return GitUtil.retrieve_name(branch);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void checkConflict(String product_name, List<String> branches_name) {
+
     }
 }

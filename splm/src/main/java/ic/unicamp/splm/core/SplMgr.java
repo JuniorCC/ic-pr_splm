@@ -163,4 +163,8 @@ public class SplMgr {
     public void showMpM() {
         dataManager.showMpM();
     }
+
+    public void checkConflict() {
+        dataManager.checkConflict(gitMgr);
+    }
 }

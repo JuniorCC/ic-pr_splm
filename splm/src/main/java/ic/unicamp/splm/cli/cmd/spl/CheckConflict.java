@@ -1,5 +1,7 @@
 package ic.unicamp.splm.cli.cmd.spl;
 
+import ic.unicamp.splm.core.SplMgr;
+import ic.unicamp.splm.core.SplMgrBuilder;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "check-conflict")
@@ -8,5 +10,7 @@ public class CheckConflict implements Runnable {
 
     @Override
     public void run() {
+        SplMgr splMgr = SplMgrBuilder.getSingletonInstance();
+        splMgr.checkConflict();
     }
 }
