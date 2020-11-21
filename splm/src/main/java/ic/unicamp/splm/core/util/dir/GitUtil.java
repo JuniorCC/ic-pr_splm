@@ -23,4 +23,18 @@ public class GitUtil {
         return String.format("%s%s", Merge_Tag, filter);
     }
 
+    public static String retrieve_git_ignore_content() {
+
+        String msg = "# develop\n" +
+                ".idea/\n" +
+                "pom.xml\n" +
+                "splm.iml\n" +
+                "src/\n" +
+                "target/\n" +
+                "\n" +
+                "# prod\n" +
+                ".splm.logs/";
+        return String.format("%s%s", Merge_Tag, msg);
+    }
+
 }

@@ -3,6 +3,7 @@ package ic.unicamp.splm.core.vc.git;
 import ic.unicamp.splm.core.util.dir.GitDir;
 import ic.unicamp.splm.core.util.dir.GitUtil;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
@@ -37,8 +38,12 @@ public class GitMgr {
         }
         if (!__exitsGitLocalBranch("master")) {
             File myFile =
-                    new File(git.getRepository().getDirectory().getParent(), ".gitignore.hello.splm");
+                    new File(git.getRepository().getDirectory().getParent(), ".gitignore");
+
             try {
+
+                FileUtils.writeStringToFile(myFile, GitUtil.retrieve_git_ignore_content(), "ISO-8859-1");
+
                 if (!myFile.createNewFile()) {
                     SplMgrLogger.warn(WAR_0__GIT_IGNORE_HELLO_SPLM_WAS_NOT_CREATED, true);
                 } else {
