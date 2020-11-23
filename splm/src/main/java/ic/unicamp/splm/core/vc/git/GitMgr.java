@@ -4,10 +4,7 @@ import ic.unicamp.splm.core.util.dir.GitDir;
 import ic.unicamp.splm.core.util.dir.GitUtil;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.api.CheckoutCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeCommand;
-import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -131,6 +128,23 @@ public class GitMgr {
             }
 
             git.branchDelete().setBranchNames(branch_name).call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void packet(){
+        try {
+            git.add().addFilepattern(".").call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+    }
+    public void spreadInSubBranch(String parent ,String child){
+        try {
+            git.checkout().setName(child).call();
+            RebaseResult result = git.rebase().setUpstream(parent).call();
+            System.out.println("Rebase had state: " + result.getStatus() + ": " + result.getConflicts());
         } catch (GitAPIException e) {
             e.printStackTrace();
         }
