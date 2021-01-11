@@ -3,6 +3,7 @@ package ic.unicamp.splm.core.vc.git;
 import ic.unicamp.splm.core.util.dir.GitDir;
 import ic.unicamp.splm.core.util.dir.GitUtil;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
+import ic.unicamp.splm.core.vc.VCManager;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -19,7 +20,7 @@ import static ic.unicamp.splm.core.util.msg.ErrorMsgTag.ERR_0__CREATING_JGIT_OBJ
 import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
 import static ic.unicamp.splm.core.util.msg.WarnMsgTag.*;
 
-public class GitMgr {
+public class GitMgr implements VCManager {
     Git git;
 
     public void init() {
@@ -165,5 +166,10 @@ public class GitMgr {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public boolean existDirectory() {
+        return GitDir.exists_git_dir();
     }
 }

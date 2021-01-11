@@ -7,7 +7,8 @@ import ic.unicamp.splm.core.data.graph.objs.feature.FeatureType;
 import ic.unicamp.splm.core.util.dir.GitDir;
 import ic.unicamp.splm.core.util.dir.SplmDir;
 import ic.unicamp.splm.core.util.logger.SplMgrLogger;
-import ic.unicamp.splm.core.vc.git.GitMgr;
+import ic.unicamp.splm.core.vc.VCMgr;
+import ic.unicamp.splm.core.vc.VCMgrBuilder;
 import ic.unicamp.splm.core.vc.git.GitMgrBuilder;
 
 import java.util.List;
@@ -17,11 +18,15 @@ import static ic.unicamp.splm.core.util.msg.WarnMsgTag.WARN_3__WE_COULD_NOT_CREA
 
 public class SplMgr {
     DataManager dataManager;
-    GitMgr gitMgr;
+
+    VCMgr vcMgr;
+
+    //GitMgr gitMgr;
 
     public SplMgr() {
         dataManager = DataManagerBuilder.getSingletonInstance();
-        gitMgr = GitMgrBuilder.getSingletonInstance();
+        vcMgr = VCMgrBuilder.getSingletonInstance();
+        vcMgr.createVC("Git", GitMgrBuilder.getSingletonInstance());
     }
 
     private void __addFeature(
@@ -75,6 +80,9 @@ public class SplMgr {
     public void loadData() {
         dataManager.loadData();
     }
+    public void searchData() {
+        dataManager.searchData();
+    }
 
     public void saveData() {
         dataManager.saveData();
@@ -112,7 +120,7 @@ public class SplMgr {
     }
 
     public void initGit() {
-        gitMgr.init();
+        //gitMgr.init();
     }
 
     public void showRawFM() {
@@ -144,7 +152,7 @@ public class SplMgr {
     }
 
     public void genGitBranches() {
-        dataManager.genGitBranches(gitMgr);
+        //dataManager.genGitBranches(gitMgr);
     }
 
     public boolean existsGitDir() {
@@ -165,10 +173,21 @@ public class SplMgr {
     }
 
     public void checkConflict() {
-        dataManager.checkConflict(gitMgr);
+        //dataManager.checkConflict(gitMgr);
     }
 
     public void checkConflict(String from) {
-        dataManager.checkConflict(gitMgr, from);
+        //dataManager.checkConflict(gitMgr, from);
     }
+
+    public void searchVCDirectories() {
+        for (String key:vcMgr.getVCList()) {
+            if(vcMgr.getVC(key).existDirectory()){
+                SplMgrLogger.info(String.format(INFO_3__VC_DIR_DETECTED, key) , true);
+            }else{
+                SplMgrLogger.info(String.format(INFO_0__VC_DIRECTORY_NOT_DETECTED, key) , true);
+            }
+        }
+    }
+
 }

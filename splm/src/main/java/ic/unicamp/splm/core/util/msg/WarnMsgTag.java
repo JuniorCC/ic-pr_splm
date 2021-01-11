@@ -41,4 +41,7 @@ public interface WarnMsgTag {
     String WAR_0__FEATURE_NOT_FOUND = "feature '%s' not found";
     String WAR_0__THERE_IS_NOT_SELECTED_FEATURE_TO_RELATE_WITH_THE_PRODUCT =
             "there is not selected features to relate to the product";
+
+
+
 }

@@ -4,9 +4,7 @@ import com.github.lalyos.jfiglet.FigletFont;
 import ic.unicamp.splm.cli.cmd.basic.Exit;
 import ic.unicamp.splm.cli.cmd.basic.Init;
 import ic.unicamp.splm.cli.cmd.basic.Version;
-import ic.unicamp.splm.cli.cmd.data.ClearData;
-import ic.unicamp.splm.cli.cmd.data.LoadData;
-import ic.unicamp.splm.cli.cmd.data.SaveData;
+import ic.unicamp.splm.cli.cmd.data.*;
 import ic.unicamp.splm.cli.cmd.dir.RemoveDir;
 import ic.unicamp.splm.cli.cmd.git.Checkout;
 import ic.unicamp.splm.cli.cmd.git.Pack;
@@ -80,27 +78,40 @@ import static ic.unicamp.splm.core.util.msg.InfoMsgTag.*;
                 // spl
                 CheckConflict.class,
                 GenerateBranches.class,
+
+                //initial
+                SearchVC.class
         })
 public class Cmd implements Runnable {
 
     @Override
     public void run() {
-        String asciiArt = FigletFont.convertOneLine(INF_0__SPLM_ART_ASCII);
-        SplMgrLogger.message(asciiArt, true);
-        SplMgrLogger.message_ln(INF_0__WELCOME_SPLM, false);
+        __showToolSignature();
         __runDefaultCommands();
         __runSplmPrompt();
     }
 
-    private void __runDefaultCommands() {
-        CommandLine cmd_version = new CommandLine(new Version());
-        CommandLine cmd_load = new CommandLine(new LoadData());
+    private void __showToolSignature() {
+        String asciiArt = FigletFont.convertOneLine(INF_0__SPLM_ART_ASCII);
+        SplMgrLogger.message(asciiArt, true);
+
+        SplMgrLogger.info(INF_0__SPLM_VERSION, true);
         SplMgrLogger.info(INF_0__SPLM_AUTHOR, true);
-        cmd_version.execute();
-        __printScanningFiles();
-        cmd_load.execute();
-        __printEndScanningFiles();
+        SplMgrLogger.message_ln(INF_0__WELCOME_SPLM, false);
     }
+
+    private void __runDefaultCommands() {
+
+        CommandLine cmd_search_vc = new CommandLine(new SearchVC());
+        __printScanningVCDirectories();
+        cmd_search_vc.execute();
+
+        CommandLine cmd_search_data = new CommandLine(new SearchData());
+        __printScanningCoreFiles();
+        cmd_search_data.execute();
+    }
+
+
 
     private void __runSplmPrompt() {
         boolean alive = true;
@@ -257,12 +268,12 @@ public class Cmd implements Runnable {
         __printCmdEnd();
     }
 
-    private void __printScanningFiles() {
-        SplMgrLogger.message_ln(INF_0__SCANNING_FILES, false);
+    private void __printScanningCoreFiles() {
+        SplMgrLogger.message_ln(INF_0__SCANNING_CORE_FILES, false);
     }
 
-    private void __printEndScanningFiles() {
-        SplMgrLogger.message_ln(INF_0__END_SCANNING_FILES, false);
+    private void __printEndScanningCoreFiles() {
+        SplMgrLogger.message_ln(INF_0__END_SCANNING_CORE_FILES, false);
     }
 
     private void __printCmdValid() {
@@ -279,5 +290,16 @@ public class Cmd implements Runnable {
 
     private void __printPrompt() {
         SplMgrLogger.message(INF_0__PROMPT, false);
+    }
+
+    private void __printEndScanningVCDirectories() {
+        SplMgrLogger.message_ln(INF_0__END_SCANNING_VC_DIRECTORIES, false);
+    }
+    private void __printEndInnerProcess() {
+        SplMgrLogger.message_ln(INF_0__END_INNER_PROCESS, false);
+    }
+
+    private void __printScanningVCDirectories() {
+        SplMgrLogger.message_ln(INF_0__SCANNING_VC_DIRECTORIES, false);
     }
 }

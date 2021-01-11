@@ -122,6 +122,18 @@ public class DataManager {
         loadHashMapData();
         loadGraphData();
     }
+    public void searchData() {
+        if (HashMapDir.exists_splm_obj_hash_map_file()) {
+            SplMgrLogger.info(INFO_3__HASHMAP_DETECTED, true);
+        } else {
+            SplMgrLogger.info(INFO_3__HASHMAP_NOT_DETECTED, true);
+        }
+        if (GraphDir.exists_splm_obj_graph_file()) {
+            SplMgrLogger.info(INFO_3__GRAPH_DETECTED, true);
+        } else {
+            SplMgrLogger.info(INFO_3__GRAPH_NOT_DETECTED, true);
+        }
+    }
 
     private void __addFeatureEdge(Vertex base_vertex, Vertex new_vertex) {
 
